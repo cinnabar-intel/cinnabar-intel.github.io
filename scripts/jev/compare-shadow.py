@@ -14,6 +14,7 @@ to miss.
 import json
 import pathlib
 import re
+import subprocess
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -29,16 +30,40 @@ def norm(url: str) -> str:
     return re.sub(r"[?#].*$", "", u).rstrip("/")
 
 
-def logged_urls(date: str) -> set[str] | None:
-    """URLs cited by the live scan's section for this date, or None if absent."""
-    if not WATCH.exists():
-        return None
-    text = WATCH.read_text()
+def _section_urls(text: str, date: str) -> set[str] | None:
     marker = f"### Added {date}"
     if marker not in text:
         return None
     section = text.split(marker, 1)[1].split("\n### Added ", 1)[0]
     return {norm(u) for u in re.findall(r"\((https?://[^)\s]+)\)", section)}
+
+
+def logged_urls(date: str) -> tuple[set[str] | None, str]:
+    """URLs the live scan cited for this date, and where they were found.
+
+    The shadow run fires an hour after the scan, while the scan's PR is still
+    open - so the merged watch log usually has nothing yet. Fall back to the
+    scan's own branch on origin, which is where the signals actually are at
+    that moment. Read-only: fetch of a single ref, then `git show`.
+    """
+    rel = "knowledge-system/baseline/zone2-futures-intelligence/06-weak-signal-watch.md"
+
+    if WATCH.exists():
+        if (urls := _section_urls(WATCH.read_text(), date)) is not None:
+            return urls, "merged watch log"
+
+    branch = f"claude/weekly-scan-{date}"
+    try:
+        subprocess.run(["git", "-C", str(REPO), "fetch", "--quiet", "origin", branch],
+                       check=True, capture_output=True, timeout=120)
+        blob = subprocess.run(["git", "-C", str(REPO), "show", f"origin/{branch}:{rel}"],
+                              check=True, capture_output=True, text=True, timeout=60).stdout
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return None, "unavailable"
+
+    if (urls := _section_urls(blob, date)) is not None:
+        return urls, f"unmerged branch origin/{branch}"
+    return None, "unavailable"
 
 
 def main() -> int:
@@ -49,11 +74,12 @@ def main() -> int:
     records = json.loads(path.read_text())
     date = re.search(r"(\d{4}-\d{2}-\d{2})", path.name).group(1)
 
-    live = logged_urls(date)
+    live, origin_desc = logged_urls(date)
     if live is None:
-        print(f"no '### Added {date}' section in the watch log yet "
-              f"(live scan unmerged?) - nothing to compare")
+        print(f"no '### Added {date}' section found in the merged log or on "
+              f"origin/claude/weekly-scan-{date} - has the live scan run?")
         return 1
+    print(f"(comparing against: {origin_desc})")
 
     kept, dropped, unread = [], [], []
     for r in records:
