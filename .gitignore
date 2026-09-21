@@ -8,3 +8,4 @@ site/
 logs/
 # PaperBanana alternate candidates (keep only canonical *-b.png, ignore *-b_0/_1/_2)
 knowledge-system/assets/images/**/*_[0-9].png
+.venv-jev/
