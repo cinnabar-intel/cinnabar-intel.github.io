@@ -35,12 +35,27 @@ def main() -> int:
     args = ap.parse_args()
 
     load_env()
-    articles = json.loads(args.articles.read_text())
+    raw = json.loads(args.articles.read_text())
+    # accept either a bare list or a fetch_candidates.py payload
+    articles = raw["candidates"] if isinstance(raw, dict) else raw
     questions = triage_questions()
     records = []
 
     with TypeSafeClient() as client:
         for art in articles:
+            # A paywalled or JS-rendered page yields a title and little else.
+            # Judging it would be judging the headline - exactly the failure the
+            # evidence benchmark exposed - so it goes to a human instead.
+            if art.get("text_ok") is False or len(art.get("text", "")) < 500:
+                print(f"  skip UNREAD {art.get('title','?')[:52]:<52} "
+                      f"({len(art.get('text',''))} chars)")
+                records.append({
+                    "title": art.get("title"), "url": art.get("url"),
+                    "source": art.get("source"), "keep": None,
+                    "classification": "UNREADABLE",
+                    "needs_review": ["no usable article text - paywall or JS-rendered; judge manually"],
+                })
+                continue
             try:
                 answers = client.system_one(article_state(art), questions)
             except Exception as e:  # noqa: BLE001 - one bad article must not kill the batch
@@ -61,6 +76,7 @@ def main() -> int:
             records.append({
                 "title": art.get("title"),
                 "url": art.get("url"),
+                "source": art.get("source"),
                 "keep": v.keep,
                 "classification": v.classification,
                 "category": v.category,
@@ -76,9 +92,11 @@ def main() -> int:
                 },
             })
 
-    kept = sum(1 for r in records if r.get("keep"))
-    print(f"\n{kept}/{len(records)} kept for reading "
-          f"({len(records) - kept} filtered before Claude sees them)")
+    kept = sum(1 for r in records if r.get("keep") is True)
+    unread = sum(1 for r in records if r.get("keep") is None)
+    dropped = len(records) - kept - unread
+    print(f"\n{kept} kept for reading, {dropped} filtered, {unread} unreadable "
+          f"(of {len(records)} candidates)")
     if args.out:
         args.out.write_text(json.dumps(records, indent=1))
         print(f"wrote {args.out}")
