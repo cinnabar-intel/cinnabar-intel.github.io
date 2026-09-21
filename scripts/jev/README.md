@@ -87,9 +87,52 @@ confidence-gating is used for *review flags only* and never overrides an answer.
 
 Needs `TYPESAFE_API_KEY`; `run_triage.py` and `benchmark.py` read it from `~/.env`.
 
+## Shadow run
+
+Scheduled via cron, **Mondays 01:30 UTC** — an hour after the live scan starts,
+which takes ~25 minutes:
+
+    30 1 * * 1 .../scripts/jev/shadow-run.sh
+
+It observes and changes nothing: no git operations at all, no repo writes, no
+dispatch. Its own non-blocking lock, so it can never queue behind or delay the
+live scan. Output lands in `logs/jev-shadow/` (gitignored, host-local).
+
+    fetch_candidates.py   12 Tier-2 feeds -> candidates in a 7-day window, full text
+    run_triage.py         judgments + policy -> verdicts
+    compare-shadow.py     verdicts vs what the live scan actually logged
+
+`sources.py` holds the feed map. Four of the 16 scan sources have no
+discoverable feed — The Batch, Every, Anthropic News, Analytics India — and are
+listed as `BLIND_SPOTS`, excluded from both accuracy figures. The shadow run
+cannot reach them, so their signals are not triage's to miss.
+
+Articles under 500 characters of extracted text are marked UNREADABLE and never
+judged: Stratechery is paywalled and OpenAI's newsroom is JS-rendered, so
+scoring them would be scoring a headline.
+
+### First full run, 2026-09-21
+
+44 candidates: 26 kept, 9 filtered, 9 unreadable.
+
+| metric | result |
+|---|---|
+| recall | 5/5 — every article the live scan cited was kept |
+| precision | 5/26 — 21 extra articles would reach Claude |
+
+**Recall is the gate.** A false drop loses a signal silently; over-keeping only
+costs reading time. Zero false drops across two runs at different scales.
+
+Precision is poor, and honestly the filter is barely earning its place yet — 26
+of 35 readable articles kept is not much of a reduction. That is the expected
+cost of a threshold deliberately tuned for recall on n=7. Weekly shadow data is
+what will justify raising it; do not raise it on a hunch.
+
 ## Next
 
-1. Shadow-run alongside the next weekly scan — compare triage against what Claude
-   keeps, without changing output.
+1. Accumulate shadow weeks. Raise `STRUCTURAL_THRESHOLD` only when the data
+   shows headroom above the highest false-drop risk.
 2. Re-benchmark the profile with full article text.
 3. Novelty check against the 149 logged signals; the pipeline has no dedup today.
+4. Fetch fallback for paywalled and JS-rendered sources, or accept them as
+   permanently human-judged.
