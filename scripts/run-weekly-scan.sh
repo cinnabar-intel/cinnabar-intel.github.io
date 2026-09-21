@@ -44,6 +44,31 @@ cd "$REPO_ROOT"
 SCAN_BRANCH_ACTIVE=0
 cleanup() {
   local rc=$?
+
+  # Always record the outcome. A failed scan used to leave nothing but a short
+  # log nobody reads, so a lost week looked identical to a quiet week.
+  if (( rc == 0 )); then
+    echo "ok $DATE $(date -u +%FT%TZ)" > "$LOG_DIR/LAST-RUN-STATUS"
+    rm -f "$LOG_DIR/FAILED-$DATE.txt"
+  else
+    echo "FAILED $DATE rc=$rc $(date -u +%FT%TZ)" > "$LOG_DIR/LAST-RUN-STATUS"
+    {
+      echo "Weekly scan FAILED"
+      echo "  date : $DATE"
+      echo "  exit : $rc"
+      echo "  when : $(date -u +%FT%TZ)"
+      echo "  log  : $LOG_FILE"
+      echo
+      echo "Last 20 log lines:"
+      tail -20 "$LOG_FILE" 2>/dev/null | sed 's/^/    /'
+    } > "$LOG_DIR/FAILED-$DATE.txt"
+    echo "ERROR: wrote failure marker $LOG_DIR/FAILED-$DATE.txt" >&2
+    # Best-effort desktop toast; never let notification failure mask the real rc.
+    powershell.exe -NoProfile -Command \
+      "New-BurntToastNotification -Text 'Cinnabar scan FAILED','$DATE exit $rc'" \
+      >/dev/null 2>&1 || true
+  fi
+
   if (( rc != 0 && SCAN_BRANCH_ACTIVE == 1 )); then
     echo "ERROR: scan failed (exit $rc) — restoring master, deleting $BRANCH" >&2
     git checkout --force master 2>/dev/null || true
@@ -59,6 +84,31 @@ trap cleanup EXIT
 # creates (never a blanket clean — other untracked work in the repo is kept).
 git checkout --force master
 git clean -fd -- digest/audio-scripts digest/public/audio digest/src/pages/issues
+
+# Wait for network before touching the remote. (2026-09-14 incident: the timer
+# fired while the host had no DNS, `git pull` failed on the first line, and the
+# whole week's scan was lost silently. Persistent=true only re-fires a *missed*
+# run, never a failed one.)
+wait_for_network() {
+  local attempt deadline=$((SECONDS + 1800))   # give a waking host up to 30 min
+  for ((attempt = 1; ; attempt++)); do
+    # GIT_TERMINAL_PROMPT=0 + timeout: never block on a credential prompt or a
+    # stalled DNS lookup. A hung probe would be worse than the failure it guards.
+    if GIT_TERMINAL_PROMPT=0 timeout 30 \
+         git ls-remote --exit-code origin HEAD >/dev/null 2>&1; then
+      (( attempt > 1 )) && echo "network reachable after $attempt attempts"
+      return 0
+    fi
+    if (( SECONDS >= deadline )); then
+      echo "ERROR: no network after 30 min ($attempt attempts) - giving up" >&2
+      return 1
+    fi
+    echo "network unreachable (attempt $attempt), retrying in 60s..."
+    sleep 60
+  done
+}
+wait_for_network
+
 git pull origin master
 
 # Abort if branch already exists (idempotency — don't overwrite prior scan)
