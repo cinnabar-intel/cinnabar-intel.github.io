@@ -1,0 +1,17 @@
+[Unit]
+Description=Elite research pipeline — Jev triage shadow run (observation only)
+Wants=network-online.target
+After=network-online.target
+# Ordering matters on a catch-up boot, when this timer and weekly-scan.timer
+# both fire at once: the shadow run compares itself against what the scan
+# logged, so it must not overtake the scan. This orders it only when both are
+# started in the same transaction; on a normal week the 01:30 offset does it.
+After=weekly-scan.service
+
+[Service]
+Type=oneshot
+ExecStart=/home/sanjayegupta/projects/elite-research-pipeline/scripts/jev/shadow-run.sh
+Environment=PATH=/home/sanjayegupta/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[Install]
+WantedBy=default.target

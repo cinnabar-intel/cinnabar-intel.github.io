@@ -1,0 +1,12 @@
+[Unit]
+Description=Jev triage shadow run — Mon 01:30 UTC, one hour after the weekly scan
+
+[Timer]
+OnCalendar=Mon *-*-* 01:30:00 UTC
+# Persistent so a shadow week is not lost when the host was off. Both this and
+# the scan derive their date from `date +%F`, so a catch-up pair on the same
+# day still agree on which date they are about.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

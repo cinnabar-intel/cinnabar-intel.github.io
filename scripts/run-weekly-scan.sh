@@ -1,13 +1,15 @@
 #!/bin/bash
 # Weekly Tier 2 source scan — Mon 00:30 UTC = 6 AM IST.
 #
-# SCHEDULED BY CRON, not systemd. The unit files in scripts/systemd/ exist but
-# were never installed (`systemctl --user is-enabled weekly-scan.timer` reports
-# not-found, and ~/.config/systemd/user/ has no weekly-scan.*). That matters:
-# cron has NO catch-up, so the Persistent=true behaviour those unit files
-# describe — a missed run firing on next boot — does not apply. If the host is
-# asleep at 00:30 UTC on a Monday, the week is simply skipped. Installing the
-# timers would restore catch-up; until then, treat a skipped week as possible.
+# Scheduled by the systemd user timer weekly-scan.timer, with Persistent=true so
+# a run missed while the host was off fires on next start. Installed 2026-09-21;
+# before that the unit files existed but had never been installed and scheduling
+# was plain cron, which has no catch-up — that is how 2026-09-14 was lost with
+# no trace. Cron entries were removed at the same time; do not re-add them or
+# the scan will fire twice.
+#
+# Install/verify:  scripts/systemd/install-timers.sh
+#                  systemctl --user list-timers
 #
 # Uses Accenture Claude subscription via headless `claude --print` invocation.
 # Opens a PR for human review. Never pushes to master directly.

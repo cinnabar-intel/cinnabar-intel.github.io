@@ -89,10 +89,12 @@ Needs `TYPESAFE_API_KEY`; `run_triage.py` and `benchmark.py` read it from `~/.en
 
 ## Shadow run
 
-Scheduled via cron, **Mondays 01:30 UTC** — an hour after the live scan starts,
-which takes ~25 minutes:
-
-    30 1 * * 1 .../scripts/jev/shadow-run.sh
+Scheduled by the systemd user timer `jev-shadow.timer`, **Mondays 01:30 UTC** —
+an hour after the live scan starts, which takes ~25 minutes. `Persistent=true`,
+so a week missed while the host was off still runs. `jev-shadow.service` is
+ordered `After=weekly-scan.service`, which matters on a catch-up boot when both
+timers fire at once: the shadow run compares itself against what the scan
+logged, so it must not overtake it.
 
 It observes and changes nothing: no git operations at all, no repo writes, no
 dispatch. Its own non-blocking lock, so it can never queue behind or delay the
