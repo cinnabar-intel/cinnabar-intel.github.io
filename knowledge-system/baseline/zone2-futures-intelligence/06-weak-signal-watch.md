@@ -2126,6 +2126,8 @@ A running log of weak signals — ideas, research, observations that are:
 - **Discarded as noise or absorbed:** Stratechery "Agents as UI" piece (paywalled beyond teaser; Salesforce action is one data point, held as context). Zvi's coverage of public AI risk polling and political polarization (single-source social-dynamics observation, held for corroboration). Simon Willison's Claude product consolidation entry and influences post (no structural signal). OpenAI Astra for Law and advertising pieces (product extensions). Analytics India Cypher conference coverage and Claude Code limits analysis (context, no fresh structural signal). The Batch Navier-Stokes commentary (story originates prior week, The Batch coverage absorbed as context). OpenAI DevDay 2026 announcement (Sep 29 event, upcoming; held for post-event signal assessment).
 ---
 
+### Added 2026-09-28 (Weekly Tier 2 scan)
+
 **2026-09-22 | Frontier capability-economics cross a new threshold: simultaneous 40-50% price cuts deliver near-flagship agentic performance**
 **Source:** Anthropic, ["Introducing Claude Opus 5.5"](https://www.anthropic.com/news/claude-opus-5-5), Sep 22, 2026; OpenAI, ["Introducing GPT-6 Sol and Luna"](https://openai.com/news/product-releases/), Sep 22, 2026; corroborated by Zvi Mowshowitz, ["AI #187: Coming Into Play"](https://thezvi.substack.com/p/ai-187-coming-into-play), Sep 24, 2026; The Batch, [Sep 25, 2026 issue](https://www.deeplearning.ai/the-batch/tag/sep-25-2026), Sep 25, 2026
 **Profile:** E4 T-Ac U3 H-Gr Z-Now
