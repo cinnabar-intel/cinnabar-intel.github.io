@@ -1,0 +1,444 @@
+---
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+import Issue from "../../layouts/Issue.astro";
+import Masthead from "../../components/Masthead.astro";
+import HeroThesis from "../../components/HeroThesis.astro";
+import AudioBrief from "../../components/AudioBrief.astro";
+import ClusterCallout from "../../components/ClusterCallout.astro";
+import SignalIndex from "../../components/SignalIndex.astro";
+import Synthesis from "../../components/Synthesis.astro";
+import Signal from "../../components/Signal.astro";
+import type { SignalLogic } from "../../components/SignalSpine.astro";
+import Methodology from "../../components/Methodology.astro";
+import PreviousIssues from "../../components/PreviousIssues.astro";
+
+const issueDate = "2026-09-28";
+const description =
+  "On September 22, Anthropic released Opus 5.5 and OpenAI released GPT-6 Sol and Luna, cutting frontier model prices forty to fifty percent while advancing agentic capability, and twenty-two heads of state signed a joint call for international frontier AI control at the UN General Assembly with the US, UK, and China declining; SemiAnalysis documented China's AI datacenter capacity exceeding all of EMEA at over twenty-four gigawatts; and Microsoft's CEO confirmed rotating between Claude, GPT, and open models in unified harnesses while Meta's non-flagship Muse became the rated best personal agent product. The week's thesis: the capability and economics barriers to enterprise-scale agentic AI deployment have largely been solved, the harness architecture and organizational design are the binding constraints, and the compliance landscape is fracturing along geography.";
+const title = "The Cinnabar Dispatch · 2026-09-28 · Possibilities with Probabilities";
+
+// Audio brief is graceful: renders if MP3 exists at the expected path, else nothing.
+// Path is checked at build time against the public/ directory.
+const audioFilename = `${issueDate}.mp3`;
+const audioFsPath = join(process.cwd(), "public", "audio", audioFilename);
+const audioPath = existsSync(audioFsPath)
+  ? `${import.meta.env.BASE_URL}audio/${audioFilename}`
+  : null;
+
+// Single source of truth for signal metadata. The scannable SignalIndex and
+// the full Signal detail blocks both read from this array, so the index number,
+// title, profile, and strength never drift. The why/watch prose stays in each
+// Signal's slots below (it does not belong in a data array).
+type Strength = "strong" | "weak";
+interface SignalMeta {
+  index: number;
+  date: string;
+  category: string;
+  title: string;
+  profile: string;
+  strength: Strength;
+  sources: { label: string; url: string }[];
+  // 3-beat causal spine. Authored in the scan, distilled ONLY from this
+  // signal's already-cited prose (no new claim/number/URL). Renders as a
+  // visual TL;DR under the title. Optional so archived issues without a spine
+  // still build; the weekly scan populates it for every current signal.
+  logic?: SignalLogic;
+}
+
+const signals: SignalMeta[] = [
+  {
+    index: 1,
+    date: "2026-09-22",
+    category: "01 GenAI Capabilities · 08 AI Productivity Tools",
+    title:
+      "Anthropic and OpenAI simultaneously cut frontier model prices forty to fifty percent while advancing agentic capability, making large-scale enterprise agent deployment economically viable.",
+    profile: "E4 T-Ac U3 H-Gr Z-Now",
+    strength: "strong",
+    logic: {
+      what: "Both labs released near-flagship agentic models on the same day, with Sol delivering ninety to ninety-five percent of Astra capability at twenty percent of the cost.",
+      mechanism: "Simultaneous price cuts from both frontier labs remove the economics barrier that constrained large-scale agentic workflow deployment in enterprise settings.",
+      soWhat: "Enterprise AI teams whose deployment plans were cost-constrained now face an organizational design constraint, not an economics one.",
+    },
+    sources: [
+      {
+        label: "anthropic.com/news/claude-opus-5-5",
+        url: "https://www.anthropic.com/news/claude-opus-5-5",
+      },
+      {
+        label: "openai.com/news/product-releases",
+        url: "https://openai.com/news/product-releases/",
+      },
+    ],
+  },
+  {
+    index: 2,
+    date: "2026-09-22",
+    category: "04 AI Governance & Ethics",
+    title:
+      "Twenty-two heads of state signed a joint call for pre-deployment safety testing and an international AI institution with threshold-trigger authority, while the US, UK, and China declined.",
+    profile: "E4 T-Sh U2 H-Gr Z-Near",
+    strength: "strong",
+    logic: {
+      what: "Canada, Australia, the EU Commission, Germany, Kenya, and seventeen other governments signed a joint call for frontier AI control at the UN General Assembly.",
+      mechanism: "The three largest AI-producing jurisdictions declined to sign, creating a three-bloc governance fracture between European-led signatories, Anglophone holdouts, and China.",
+      soWhat: "Enterprise AI teams operating across signing and non-signing geographies now face structurally divergent compliance obligations that will intensify as capability thresholds are defined.",
+    },
+    sources: [
+      {
+        label: "valtioneuvosto.fi/en/-/a-call-for-control-of-frontier-ai-models",
+        url: "https://valtioneuvosto.fi/en/-/a-call-for-control-of-frontier-ai-models",
+      },
+      {
+        label: "nbcnews.com/tech/tech-news/20-countries-call-global-ai-oversight-rcna599062",
+        url: "https://www.nbcnews.com/tech/tech-news/20-countries-call-global-ai-oversight-rcna599062",
+      },
+    ],
+  },
+  {
+    index: 3,
+    date: "2026-09-25",
+    category: "05 AI Infrastructure Trajectory",
+    title:
+      "China's delivered AI datacenter capacity surpasses all of EMEA combined, with three companies spending twenty billion dollars in a single quarter and construction time for 100MW facilities cut to under twelve months.",
+    profile: "E3 T-Ac U2 H-Gr Z-Near",
+    strength: "strong",
+    logic: {
+      what: "SemiAnalysis tracked over twenty-four gigawatts of delivered capacity across 1,000 facilities in China, exceeding all of EMEA, driven by doubled year-over-year capex.",
+      mechanism: "Construction speed fell from eighteen months to under twelve months for 100MW facilities, meaning China's infrastructure advantage compounds faster than export controls anticipated.",
+      soWhat: "Strategic assumptions about US chip export controls containing China's AI compute trajectory are empirically outdated, with implications for the geopolitics of frontier model competition.",
+    },
+    sources: [
+      {
+        label: "newsletter.semianalysis.com/p/the-chinese-ai-infrastructure-boom",
+        url: "https://newsletter.semianalysis.com/p/the-chinese-ai-infrastructure-boom",
+      },
+    ],
+  },
+  {
+    index: 4,
+    date: "2026-09-21",
+    category: "02 Enterprise AI & Org Transformation",
+    title:
+      "Microsoft confirmed rotating between Claude, GPT, and open models in unified harnesses, and Meta's non-flagship Muse became the rated best personal agent product, signaling that capability sufficiency has arrived across providers.",
+    profile: "E3 T-Sh U3 H-Gr Z-Now",
+    strength: "strong",
+    logic: {
+      what: "Microsoft's CEO confirmed multi-model rotation in unified harnesses; Meta Muse, a non-state-of-the-art model, delivered the rated best personal agent product on the market.",
+      mechanism: "When capability sufficiency is reached across multiple providers, competitive advantage shifts from model capability to harness quality, data integration, and workflow design.",
+      soWhat: "Enterprise vendor evaluation for AI deployments now requires assessing harness architecture and integration depth separately from model capability benchmarks.",
+    },
+    sources: [
+      {
+        label: "stratechery.com/2026/frontier-overhangs",
+        url: "https://stratechery.com/2026/frontier-overhangs/",
+      },
+    ],
+  },
+  {
+    index: 5,
+    date: "2026-09-25",
+    category: "01 GenAI Capabilities · 11 Agent Frameworks & Dev Tools",
+    title:
+      "Classification-optimized models gaining developer traction signal a potential disaggregation of AI into specialized functional types alongside generative and reasoning models.",
+    profile: "E2 T-Em U3 H-Ah Z-Near",
+    strength: "weak",
+    logic: {
+      what: "TypeSafe AI's Jev returns floating point classifications rather than text, gaining developer adoption as a fast, cheap complement to expensive reasoning models.",
+      mechanism: "A functional split between classification models and reasoning models mirrors the database evolution from monolithic SQL to purpose-specific tiers.",
+      soWhat: "Enterprise AI infrastructure planning may need a dedicated classification-inference tier with different cost, speed, and deployment characteristics than the reasoning tier.",
+    },
+    sources: [
+      {
+        label: "deeplearning.ai/the-batch/tag/sep-25-2026",
+        url: "https://www.deeplearning.ai/the-batch/tag/sep-25-2026",
+      },
+    ],
+  },
+];
+---
+
+<Issue title={title} description={description} issueDate={issueDate}>
+  <Masthead
+    slot="header"
+    issueDate={issueDate}
+    scanNumber={21}
+    signalCount={5}
+    strongCount={4}
+    weakCount={1}
+  />
+
+  <HeroThesis kicker="This week's thesis">
+    Two developments last week mark a structural shift in the economics
+    and governance of frontier AI. On September 22, Anthropic and OpenAI
+    released near-flagship agentic models at forty to fifty percent lower
+    prices, making large-scale enterprise agent deployment economically
+    viable for the first time; on the same day, twenty-two heads of state
+    signed a joint call for frontier AI control at the UN General Assembly,
+    while the US, UK, and China declined. SemiAnalysis confirmed that
+    China's AI datacenter capacity now exceeds all of EMEA combined, and
+    Microsoft's CEO confirmed that the world's largest enterprise software
+    stack already rotates between multiple frontier models in unified
+    harnesses. The operative implication for enterprise AI strategy: the
+    capability and economics barriers to agentic deployment have largely
+    been solved, the harness architecture and organizational design are
+    the binding constraints, and the compliance landscape is about to
+    fracture along geography.
+  </HeroThesis>
+
+  <AudioBrief audioPath={audioPath} issueDate={issueDate} />
+
+  <ClusterCallout kicker="The pattern across signals 1, 3, and 4">
+    <p>
+      Read separately, signal 1 is a pricing story, signal 3 is an
+      infrastructure story, and signal 4 is a vendor-selection story.
+      Read together, they describe a single structural shift in the
+      economics of enterprise AI deployment: frontier capability is now
+      available at commodity pricing (signal 1), China is building the
+      infrastructure to run it at nation-state scale without US hardware
+      (signal 3), and enterprise buyers can already rotate between
+      providers without capability sacrifice (signal 4).
+      <strong>The convergence of these three signals argues that the
+      economic and technical barriers to enterprise-scale AI deployment
+      have been largely solved, and the competition has shifted to the
+      layer above the model: harness design, workflow integration, and
+      organizational capacity to operate agentic systems at scale.</strong>
+    </p>
+  </ClusterCallout>
+
+  <SignalIndex signals={signals} />
+
+  <Synthesis>
+    <p>
+      This week's scan logged five signals, four of them strong, in a
+      window that produced two of the largest individual model
+      announcements of the year alongside a structurally significant
+      governance event. Anthropic and OpenAI released near-flagship
+      agentic models at forty to fifty percent lower prices on the same
+      day (signal 1); twenty-two heads of state signed a joint call for
+      international frontier AI control while the US, UK, and China
+      declined (signal 2); SemiAnalysis documented China's AI datacenter
+      capacity surpassing all of EMEA at over twenty-four gigawatts
+      (signal 3); Stratechery documented that Microsoft confirmed rotating
+      between multiple frontier models in unified harnesses and Meta's
+      non-frontier Muse delivered the best-rated personal agent product
+      (signal 4); and The Batch surfaced an emerging category of
+      classification-optimized models gaining developer traction alongside
+      generative and reasoning models (signal 5).
+    </p>
+
+    <p>
+      The through-line across signals 1, 3, and 4 is that competitive
+      advantage in enterprise AI has migrated from the model layer to the
+      layer above it. Signal 1 documents that frontier-class agentic
+      capability is available at commodity economics. Signal 3 documents
+      that infrastructure to run that capability is being built at a pace
+      that the geopolitical assumptions of 2025 did not anticipate.
+      Signal 4 documents that enterprise buyers can already make
+      multi-model decisions without capability sacrifice. <strong>The
+      implication is that the question enterprise AI strategy has been
+      asking, which model is best, has been displaced by a question the
+      market has not yet developed standard evaluation frameworks for:
+      which harness architecture, data integration approach, and
+      organizational design unlocks the most enterprise value from models
+      that are all good enough.</strong>
+    </p>
+
+    <p>
+      For the reader whose work is enterprise AI strategy: this week's
+      signals suggest three concrete revisions to current frameworks.
+      First, any model evaluation should now include a harness portability
+      criterion, since Microsoft's multi-model rotation and Meta Muse's
+      performance demonstrate that harness quality is independently
+      variable from model choice. Second, any compliance planning should
+      include a geography layer accounting for the three-bloc fracture
+      created by signal 2's non-signing bloc, since the gap between the
+      international call's threshold-trigger framework and the position of
+      the US, UK, and China will produce divergent obligations at a pace
+      most compliance teams have not anticipated. Third, any infrastructure
+      strategy that assumed US export controls would contain Chinese
+      compute capacity should be revisited against signal 3's data, since
+      the SemiAnalysis numbers indicate that constraint has already been
+      largely circumvented through domestic infrastructure investment.
+    </p>
+  </Synthesis>
+
+  <Signal {...signals[0]}>
+    <p slot="why">
+      On September 22, 2026, Anthropic released Claude Opus 5.5 and
+      OpenAI released GPT-6 Sol and Luna within hours of each other,
+      marking the first time two frontier labs have simultaneously cut
+      API prices by this magnitude while advancing agentic capability.
+      Opus 5.5 matches Fable 5.1 performance at forty percent lower cost
+      and leads on agentic coding benchmarks: 66.4% on Terminal-Bench
+      4.0, 54.4% on FrontierCode, 57.8% on CursorBench, and 81.8% on
+      OSWorld 2.0 for computer use. GPT-6 Sol delivers ninety to
+      ninety-five percent of flagship Astra's practical capability at
+      twenty percent of the cost per task; Luna matches prior-generation
+      flagship performance at one-tenth the cost. The combined API
+      pricing: Sol at $2 per million input tokens and $10 per million
+      output tokens; Opus 5.5 at $4 per million input and $20 per million
+      output. The simultaneous release is strategically significant:
+      neither lab was willing to cede the economics argument to the other
+      even while the governance pacing discussion from the prior week
+      remained active. The unlock this creates is for sustained agentic
+      workflows, extended multi-step processes across thousands of tool
+      calls, that previously required expensive frontier models and now
+      run at commodity pricing.
+    </p>
+    <p slot="watch">
+      Whether enterprise AI token consumption data from cloud provider
+      earnings reports shows a step-change increase in Q4 2026, confirming
+      that the economics unlock translated to deployment scale rather than
+      developer experimentation. Whether the pricing floor holds across
+      both labs for at least two quarters, or whether one lab cuts again,
+      triggering a race that would further accelerate enterprise agentic
+      deployment timelines.
+    </p>
+  </Signal>
+
+  <Signal {...signals[1]}>
+    <p slot="why">
+      The joint call, titled "A Call for Control of Frontier AI Models,"
+      was published simultaneously by twenty-two governments on September
+      22, 2026, timed to the UN General Assembly. Signatories include
+      Canadian Prime Minister Mark Carney, Australian Prime Minister
+      Anthony Albanese, EU Commission President Ursula von der Leyen,
+      German Chancellor Friedrich Merz, Kenyan President William Ruto,
+      South African President Cyril Ramaphosa, Singapore's representative,
+      and fifteen others across six continents. The call makes three
+      operational demands: pre-deployment safety testing before frontier
+      models are released; common international standards for frontier AI
+      development; and an international institution with authority to act
+      "when capability thresholds are crossed." The last clause is the
+      structural novelty. Prior international AI governance statements
+      have stopped at standards and cooperation; this call explicitly
+      proposes threshold-trigger authority, meaning an institution with
+      the power to require pauses or evaluations when models cross defined
+      capability levels. The three notable non-signatories are the US,
+      UK, and China. The US and UK's absence is particularly significant
+      given their lead positions in the AI Safety Institute framework; the
+      divergence suggests a deliberate policy decision to preserve
+      optionality on frontier development pace rather than join a
+      threshold-trigger regime.
+    </p>
+    <p slot="watch">
+      Whether the US or UK joins a subsequent version of the call within
+      six months, or whether the non-signing positions harden into formal
+      opposition at a multilateral forum. Whether any G20 signatory nation
+      enacts domestic pre-deployment testing legislation based on the
+      call's framework within twelve months, which would test whether the
+      joint statement produces binding national regulation or remains
+      aspirational. Whether the capability threshold definition process
+      begins within an international body, since that definition will
+      determine the practical scope of any future institution's authority.
+    </p>
+  </Signal>
+
+  <Signal {...signals[2]}>
+    <p slot="why">
+      SemiAnalysis's China Datacenter Model, published September 25, is
+      based on proprietary tracking of more than 1,000 facilities across
+      sixty-plus operators. The headline metric, twenty-four gigawatts of
+      delivered capacity, exceeds all of EMEA or the rest of Asia. The
+      capex signal is equally significant: Alibaba, Tencent, and Baidu
+      combined spent $20 billion in Q2 2026 alone, more than double the
+      Q2 2025 figure. ByteDance occupies roughly twenty percent of China's
+      delivered datacenter capacity, and construction speed has improved
+      from eighteen months to under twelve months for 100MW facilities.
+      The analysis argues that China's structural advantages, including
+      abundant power, rapid permitting, prefabrication expertise, and
+      lower construction costs, mean the infrastructure advantage
+      compounds faster than export controls can adapt. The strategic
+      implication: the US policy assumption that limiting access to NVIDIA
+      hardware constrains China's AI compute trajectory is empirically
+      outdated. China has built an alternative infrastructure stack at a
+      pace and scale that the original export control framework did not
+      anticipate.
+    </p>
+    <p slot="watch">
+      Whether NVIDIA or the US Commerce Department publishes revised
+      export control guidance explicitly accounting for China's non-NVIDIA
+      inference stack within twelve months. Whether a US frontier lab
+      publishes benchmarks comparing China-native models against US
+      frontier models by end of 2026, since infrastructure at twenty-four
+      gigawatts of delivered capacity can now support frontier-class
+      training runs that were unthinkable two years ago.
+    </p>
+  </Signal>
+
+  <Signal {...signals[3]}>
+    <p slot="why">
+      Ben Thompson's September 21 analysis of "frontier overhangs"
+      documents two structurally significant data points from the same
+      week. First, Microsoft CEO Satya Nadella confirmed that Microsoft
+      rotates between Claude, GPT-6, and open-weight models in unified
+      harnesses for its enterprise deployments, meaning the world's
+      largest enterprise software stack treats frontier models as
+      interchangeable components rather than committed vendors. Second,
+      Meta's Muse, explicitly described as not state-of-the-art by
+      benchmark, produced what reviewers called the best personal agent
+      product on the market. The Muse data point is the more strategically
+      important one: it demonstrates that capability sufficiency has been
+      reached across providers, such that a non-frontier model in an
+      excellent harness outperforms a frontier model in a standard
+      integration. Thompson argues that the competitive moat for AI
+      companies is migrating from model capability to harness quality,
+      application context, and workflow integration depth, exactly the
+      space where incumbents and system integrators can compete directly
+      with model labs. For enterprise AI buyers, this creates a
+      procurement shift: the evaluation question changes from "which model
+      is most capable" to "which vendor or architecture integrates most
+      effectively into our specific workflows and data environment."
+    </p>
+    <p slot="watch">
+      Whether a second major cloud provider, specifically Google Cloud or
+      AWS, publicly confirms a multi-model rotation strategy equivalent
+      to Microsoft's, either in earnings calls or published architecture
+      documentation. Whether a large enterprise publishes a formal
+      multi-model procurement decision that explicitly treats frontier
+      models as interchangeable components in a named harness architecture,
+      establishing a replicable evaluation framework for others.
+    </p>
+  </Signal>
+
+  <Signal {...signals[4]}>
+    <p slot="why">
+      The Batch's September 25 issue flags TypeSafe AI's Jev as gaining
+      developer adoption despite the AI industry's nearly exclusive focus
+      on generative and reasoning capabilities. Jev is described as a
+      "System One model," a classification-focused architecture that
+      accepts text inputs but returns floating point numbers corresponding
+      to categories, yes/no questions, ratings, and associated confidence
+      scores, rather than natural language. The "System One" framing
+      explicitly invokes fast, automatic thinking versus the slow,
+      deliberate reasoning of generative models. If this architecture
+      pattern scales, it signals a disaggregation of AI into specialized
+      functional types: cheap, fast classification models for routing,
+      filtering, and structured decision-making alongside expensive
+      reasoning models for generation and judgment. The analogy to
+      database architecture evolution is instructive: the transition from
+      monolithic SQL databases to tiered purpose-specific stores preceded
+      widespread enterprise adoption and created new infrastructure
+      categories that incumbents did not anticipate. A similar
+      disaggregation in AI inference could create classification-inference
+      as a distinct infrastructure tier with different cost, speed,
+      latency, and deployment characteristics than the reasoning-generation
+      tier.
+    </p>
+    <p slot="watch">
+      Whether a second vendor releases a named classification-optimized
+      model with comparable framing within six months, indicating that Jev
+      is a category first-mover rather than a product curiosity. Whether
+      any major cloud provider adds a dedicated inference tier or pricing
+      category for classification-only workloads within twelve months,
+      signaling infrastructure accommodation of the architecture and
+      confirming commercial viability.
+    </p>
+  </Signal>
+
+  <PreviousIssues currentDate={issueDate} />
+
+  <Methodology slot="footer" />
+</Issue>
