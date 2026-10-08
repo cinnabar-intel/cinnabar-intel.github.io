@@ -21,14 +21,16 @@ from dataclasses import dataclass, field
 
 # Probability above which a Noul counts as yes.
 #
-# STRUCTURAL = 0.25 is measured, not guessed. On a 7-article set (4 signals the
+# STRUCTURAL is measured, not guessed. On a 7-article set (4 signals the
 # 2026-09-21 scan logged, 3 the same scan discarded as noise) the two classes
-# separated cleanly: signals 0.34-0.80, noise 0.07-0.15. Any threshold in
-# 0.16-0.34 scores 100%; 0.25 sits mid-band, ~0.09 clear of both edges.
-# n=7 demonstrates separability, not a tuned value - widen the set before
-# trusting the exact number, and prefer erring low so a borderline article
-# reaches a human rather than being dropped silently.
-STRUCTURAL_THRESHOLD = 0.25
+# separated cleanly: signals 0.34-0.80, noise 0.07-0.15, so it started at 0.25,
+# mid-band. The 2026-10-05 shadow run then dropped a signal the live scan
+# logged (Gary Marcus, NYC hearing on AI risks) at p=0.20: real signals score
+# below the calibration band. 0.18 keeps that signal and stays ~0.03 above the
+# calibration noise ceiling. n=7 demonstrates separability, not a tuned value -
+# widen the set before trusting the exact number, and prefer erring low so a
+# borderline article reaches a human rather than being dropped silently.
+STRUCTURAL_THRESHOLD = 0.18
 
 # CORROBORATED has NOT been calibrated. On the same set every article scored
 # 0.10-0.39, so at 0.55 everything classifies WEAK and the distinction stops

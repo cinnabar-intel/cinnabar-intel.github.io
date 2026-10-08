@@ -62,6 +62,8 @@ def main():
     check("exactly at structural threshold -> kept", v.keep)
     v = classify(answers(STRUCTURAL_THRESHOLD - 0.001, 0.9))
     check("just below structural threshold -> dropped", not v.keep)
+    v = classify(answers(0.20, 0.9))
+    check("2026-10-05 missed signal (structural 0.20) -> kept", v.keep)
     v = classify(answers(0.9, CORROBORATED_THRESHOLD))
     check("exactly at corroborated threshold -> STRONG", v.classification == "STRONG")
 
