@@ -35,7 +35,8 @@ def _section_urls(text: str, date: str) -> set[str] | None:
     if marker not in text:
         return None
     section = text.split(marker, 1)[1].split("\n### Added ", 1)[0]
-    return {norm(u) for u in re.findall(r"\((https?://[^)\s]+)\)", section)}
+    source_lines = re.findall(r"^\*\*Source:\*\*.*$", section, re.MULTILINE)
+    return {norm(u) for line in source_lines for u in re.findall(r"\((https?://[^)\s]+)\)", line)}
 
 
 def logged_urls(date: str) -> tuple[set[str] | None, str]:
