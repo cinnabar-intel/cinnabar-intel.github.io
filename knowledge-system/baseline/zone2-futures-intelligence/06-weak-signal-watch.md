@@ -2592,6 +2592,8 @@ A running log of weak signals — ideas, research, observations that are:
 
 ### Added 2026-11-02 (Weekly Tier 2 scan)
 
+*Archive restoration, 2026-11-10: the coverage note below describes the log available when this scan was generated. The October 19 and October 26 scans have since been restored above.*
+
 *Coverage note: the log has no weekly scan between 2026-10-05 and this one, so this scan covers only 2026-10-26 to 2026-11-02. Signals published 2026-10-06 to 2026-10-25 were not captured.*
 
 **2026-10-26 | Anthropic's S-1 gives the first filed economics of a frontier lab: profitable growth against roughly $450B of mostly noncancelable compute commitments**
