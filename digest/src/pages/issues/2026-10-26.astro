@@ -1,0 +1,408 @@
+---
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+import Issue from "../../layouts/Issue.astro";
+import Masthead from "../../components/Masthead.astro";
+import HeroThesis from "../../components/HeroThesis.astro";
+import AudioBrief from "../../components/AudioBrief.astro";
+import ClusterCallout from "../../components/ClusterCallout.astro";
+import SignalIndex from "../../components/SignalIndex.astro";
+import Synthesis from "../../components/Synthesis.astro";
+import Signal from "../../components/Signal.astro";
+import type { SignalLogic } from "../../components/SignalSpine.astro";
+import Methodology from "../../components/Methodology.astro";
+import PreviousIssues from "../../components/PreviousIssues.astro";
+
+const issueDate = "2026-10-26";
+const description =
+  "Between October 20 and 23, two security teams independently used frontier models to find the same remote code execution flaws in PHP and a leak collapsed the disclosure embargo; Ethan Mollick charted METR's task-horizon yardstick saturating while cost per correct answer fell roughly seven hundred fifty fold; Moonshot's Kimi K3.1 Pro reached fourth on the Artificial Analysis index at two dollars and ten dollars per million tokens; Infosys reported AI revenue up twenty-nine percent in a quarter while cutting its growth guidance; and the Pragmatic Engineer found that most of twenty-seven companies cannot yet measure the return on AI spend. The week's thesis: capability and cost curves are now moving faster than the institutions built to measure, disclose, and price them.";
+const title = "The Cinnabar Dispatch · 2026-10-26 · Possibilities with Probabilities";
+
+// Audio brief is graceful: renders if MP3 exists at the expected path, else nothing.
+// Path is checked at build time against the public/ directory.
+const audioFilename = `${issueDate}.mp3`;
+const audioFsPath = join(process.cwd(), "public", "audio", audioFilename);
+const audioPath = existsSync(audioFsPath)
+  ? `${import.meta.env.BASE_URL}audio/${audioFilename}`
+  : null;
+
+// Single source of truth for signal metadata. The scannable SignalIndex and
+// the full Signal detail blocks both read from this array, so the index number,
+// title, profile, and strength never drift. The why/watch prose stays in each
+// Signal's slots below (it does not belong in a data array).
+type Strength = "strong" | "weak";
+interface SignalMeta {
+  index: number;
+  date: string;
+  category: string;
+  title: string;
+  profile: string;
+  strength: Strength;
+  sources: { label: string; url: string }[];
+  // 3-beat causal spine. Authored in the scan, distilled ONLY from this
+  // signal's already-cited prose (no new claim/number/URL). Renders as a
+  // visual TL;DR under the title. Optional so archived issues without a spine
+  // still build; the weekly scan populates it for every current signal.
+  logic?: SignalLogic;
+}
+
+const signals: SignalMeta[] = [
+  {
+    index: 1,
+    date: "2026-10-21",
+    category: "04 AI Governance & Ethics · 02 Enterprise AI & Org Transformation",
+    title:
+      "Two teams independently find the same web-scale PHP remote code execution flaws with frontier models, and a disclosure leak turns a two-month embargo into a mass-exploitation race.",
+    profile: "E4 T-Ac U3 H-Gr Z-Now",
+    strength: "strong",
+    logic: {
+      what: "Two teams used frontier models to find the same PHP remote-execution flaws; a leak forced an early patch.",
+      mechanism: "Coordinated disclosure assumes few discoverers; parallel AI-assisted discovery collapses the embargo window and leaves slow-patching sites exposed.",
+      soWhat: "Patch-latency assumptions for long-tail web estates need revisiting, because exploitation now starts within hours of a leak.",
+    },
+    sources: [
+      {
+        label: "simonwillison.net/2026/Oct/21/php-security-release",
+        url: "https://simonwillison.net/2026/Oct/21/php-security-release/",
+      },
+      {
+        label: "latent.space/p/ainews-openais-patch-the-planet-program",
+        url: "https://www.latent.space/p/ainews-openais-patch-the-planet-program",
+      },
+      {
+        label: "analyticsindiamag.com/ai-trends/internet-on-alert-as-ai-uncovers-critical-flaws-in-php-used-by-70-of-websites",
+        url: "https://analyticsindiamag.com/ai-trends/internet-on-alert-as-ai-uncovers-critical-flaws-in-php-used-by-70-of-websites",
+      },
+      {
+        label: "thezvi.substack.com/p/ai-191-the-hackening-begins",
+        url: "https://thezvi.substack.com/p/ai-191-the-hackening-begins",
+      },
+    ],
+  },
+  {
+    index: 2,
+    date: "2026-10-20",
+    category: "01 GenAI Capabilities · 03 Workforce & Human-AI Collaboration",
+    title:
+      "Mollick charts METR's task-horizon yardstick saturating while cost per correct answer falls roughly seven hundred fifty fold.",
+    profile: "E4 T-Ac U3 H-Gr Z-Now",
+    strength: "strong",
+    logic: {
+      what: "Mollick charts METR's task horizon doubling eight times, and METR reportedly can no longer measure it reliably.",
+      mechanism: "The yardstick is saturating, not only the capability, so benchmark-defined agent horizons lose reliability at the top end.",
+      soWhat: "Planning that relies on benchmark-defined agent capacity needs a different yardstick, since the current one no longer measures the top end.",
+    },
+    sources: [
+      {
+        label: "oneusefulthing.org/p/30-months-on-the-exponential-in-charts",
+        url: "https://www.oneusefulthing.org/p/30-months-on-the-exponential-in-charts",
+      },
+      {
+        label: "importai.substack.com/p/import-ai-477-in-which-i-tell-the",
+        url: "https://importai.substack.com/p/import-ai-477-in-which-i-tell-the",
+      },
+    ],
+  },
+  {
+    index: 3,
+    date: "2026-10-23",
+    category: "01 GenAI Capabilities · 10 Local AI Engineering",
+    title:
+      "Kimi K3.1 Pro reaches fourth on the Artificial Analysis index at $2 and $10 per million tokens, with open weights promised by November 4.",
+    profile: "E3 T-Ac U2 H-Ah Z-Now",
+    strength: "strong",
+    logic: {
+      what: "Moonshot's Kimi K3.1 Pro scored 55 on the Artificial Analysis index at $2 and $10 per million tokens.",
+      mechanism: "If the promised weights ship, the open-versus-proprietary gap shrinks from twelve index points to three, adding price-performance leverage.",
+      soWhat: "Enterprise buyers gain negotiating leverage and a credible open-weight option for data-residency cases, if the weights arrive.",
+    },
+    sources: [
+      {
+        label: "simonwillison.net/2026/Oct/23/kimi-k31-pro",
+        url: "https://simonwillison.net/2026/Oct/23/kimi-k31-pro/",
+      },
+      {
+        label: "latent.space/p/ainews-kimi-31",
+        url: "https://www.latent.space/p/ainews-kimi-31",
+      },
+      {
+        label: "interconnects.ai/p/latest-open-artifacts-25-deepseek",
+        url: "https://www.interconnects.ai/p/latest-open-artifacts-25-deepseek",
+      },
+    ],
+  },
+  {
+    index: 4,
+    date: "2026-10-23",
+    category: "02 Enterprise AI & Org Transformation",
+    title:
+      "Infosys AI revenue grows 29% quarter-on-quarter to 10.5% of revenue while its FY27 growth guidance is cut to 1% to 2%.",
+    profile: "E4 T-Sh U2 H-Gr Z-Now",
+    strength: "strong",
+    logic: {
+      what: "Infosys reported AI revenue up 29% quarter-on-quarter, now 10.5% of revenue, while cutting FY27 growth guidance to 1% to 2%.",
+      mechanism: "AI-native revenue is growing fast but is not yet offsetting deflation in the traditional services base.",
+      soWhat: "Services strategies should model AI revenue and core-base pricing pressure separately, since one does not yet cover the other.",
+    },
+    sources: [
+      {
+        label: "analyticsindiamag.com/ai-news/infosys-ai-revenue-rises-29-in-q2-fy27-growth-guidance-cut",
+        url: "https://analyticsindiamag.com/ai-news/infosys-ai-revenue-rises-29-in-q2-fy27-growth-guidance-cut",
+      },
+    ],
+  },
+  {
+    index: 5,
+    date: "2026-10-20",
+    category: "02 Enterprise AI & Org Transformation · 08 AI Productivity Tools",
+    title:
+      "Across twenty-seven companies, AI spend per developer ranges from $150 to about $3,000 a month, and few can yet measure the return.",
+    profile: "E2 T-Em U2 H-Ah Z-Now",
+    strength: "weak",
+    logic: {
+      what: "Across twenty-seven companies, monthly AI spend per developer ranges from $150 to about $3,000, and few can measure return.",
+      mechanism: "Spend is scaling faster than the ability to measure value, and subsidized pricing may be about to reprice the cost basis.",
+      soWhat: "Define a value metric beyond pull-request counts before budgets reprice, or the ROI case will rest on weak proxies.",
+    },
+    sources: [
+      {
+        label: "newsletter.pragmaticengineer.com/p/whats-the-roi-of-software-engineers",
+        url: "https://newsletter.pragmaticengineer.com/p/whats-the-roi-of-software-engineers",
+      },
+    ],
+  },
+];
+---
+
+<Issue title={title} description={description} issueDate={issueDate}>
+  <Masthead
+    slot="header"
+    issueDate={issueDate}
+    scanNumber={24}
+    signalCount={8}
+    strongCount={4}
+    weakCount={4}
+  />
+
+  <HeroThesis kicker="This week's thesis">
+    The curves are now steeper than the instruments built to read them.
+    METR's task-horizon benchmark is reportedly saturating, a two-month
+    coordinated disclosure collapsed within a day of a leak, and most
+    companies that have scaled AI spend cannot yet say what it returned.
+    Infosys shows the commercial version of the same gap: AI revenue
+    growing twenty-nine percent in a quarter while guidance for the core
+    business is cut. For an enterprise AI strategy reader, the binding
+    constraint is no longer what the models can do; it is whether your
+    organization can measure, disclose, and price it fast enough.
+  </HeroThesis>
+
+  <AudioBrief audioPath={audioPath} issueDate={issueDate} />
+
+  <ClusterCallout kicker="The pattern across signals 1, 2, 4, and 5">
+    <p>
+      Read separately, signal 1 is a security incident, signal 2 is a set of
+      charts, signal 4 is a quarterly result, and signal 5 is a survey of
+      engineering budgets. Read together, they show the same failure in four
+      places: an institution designed for a slower curve, whether
+      embargo-based disclosure, a benchmark yardstick, a services revenue
+      model, or a spend-control process, is being outrun by capability and
+      cost declines it was not built to absorb. <strong>The organizations
+      that gain are not the ones with the most AI spend; they are the ones
+      that rebuild their measurement, disclosure, and pricing processes for a
+      curve that no longer waits for them.</strong>
+    </p>
+  </ClusterCallout>
+
+  <SignalIndex signals={signals} />
+
+  <Synthesis>
+    <p>
+      This week's scan logged eight signals, four strong and four weak, and
+      five are featured here. Two teams used frontier models to find the same
+      PHP remote code execution flaws, and a leak turned a two-month embargo
+      into a mass-exploitation race (signal 1); Mollick charted METR's task
+      horizon doubling eight times until METR reportedly could no longer
+      measure it reliably (signal 2); Kimi K3.1 Pro reached fourth on the
+      Artificial Analysis index at a fraction of frontier pricing (signal 3);
+      Infosys reported AI revenue up twenty-nine percent in a quarter while
+      cutting guidance (signal 4); and the Pragmatic Engineer found that few
+      of twenty-seven companies can measure the return on AI spend (signal
+      5).
+    </p>
+
+    <p>
+      Signals 1, 2, 4, and 5 converge on a single structural point. The
+      capability and cost curves keep steepening, and the processes that sit
+      on top of them, including vulnerability disclosure, benchmarking,
+      services pricing, and budget control, were each designed on the
+      assumption of a slower curve. <strong>When the measuring instrument
+      saturates, the disclosure window collapses, and spend outruns ROI
+      evidence, the risk is not that AI underdelivers; it is that
+      organizations cannot tell whether it delivered.</strong> Signal 3 adds
+      the price side: a near-frontier model at half the price of the leader
+      gives buyers leverage, but only if weights and licenses arrive as
+      promised.
+    </p>
+
+    <p>
+      For the reader whose work is enterprise AI strategy: this week
+      suggests three updates to current planning. First, treat patch latency
+      as a strategic metric, because the PHP episode shows exploitation
+      beginning within hours of a leak and long-tail estates carrying the
+      exposure. Second, do not anchor capacity plans on a single published
+      benchmark horizon while the yardstick itself is saturating; ask which
+      measure will replace it. Third, set a value metric beyond pull-request
+      counts for AI spend now, since subsidized pricing may end at some firms
+      and Infosys shows that fast AI revenue growth does not automatically
+      offset pressure on the core business.
+    </p>
+  </Synthesis>
+
+  <Signal {...signals[0]}>
+    <p slot="why">
+      Security firm Calif, using OpenAI's GPT-5.6 Sol, and Wiz, using Gemini 4
+      Argon, GPT-5.6 Sol, and its own tooling, independently found the same
+      two PHP memory-corruption flaws (CVE-2026-109618 and CVE-2026-109619,
+      CVSS 9.2) in August, with unauthenticated remote code execution
+      demonstrated against WordPress, Drupal, and Joomla. PHP powers roughly
+      seventy percent of websites. After the CVE identifiers leaked on October
+      20, PHP moved its release up by a day and a misplaced proof-of-concept
+      video spread; Cloudflare reported thousands of exploit attempts in the
+      ten hours before disclosure, tens of thousands within forty-five minutes
+      after, and millions later. Coordinated disclosure assumes few
+      discoverers and a long embargo. <em>When several parties can find the
+      same bug in parallel with commercial models, the embargo window
+      collapses</em> and slow-patching long-tail sites carry the exposure.
+      This extends the August signal on AI-driven disruption of coordinated
+      disclosure from a rumor-level dynamic to an in-the-wild, web-scale
+      event. The widely quoted claims that seventy percent of the web is
+      affected and that about 1.5 million servers are unpatched are not
+      independently verified and are not relied on here.
+    </p>
+    <p slot="watch">
+      Whether PHP, CISA, or a major CVE Numbering Authority publishes a
+      revised embargo and disclosure policy that explicitly assumes parallel
+      AI-assisted discovery within six months. Whether an enterprise or
+      insurer publishes a post-incident measure of patch lag for PHP2Shell,
+      quantifying the exposure window for long-tail web estates.
+    </p>
+  </Signal>
+
+  <Signal {...signals[1]}>
+    <p slot="why">
+      In "30 Months on the Exponential (in Charts)," Mollick shows that twenty
+      different models, all from Anthropic, Google, or OpenAI, have held the
+      lead since GPT-4's release, that one hundred eighty models now beat
+      GPT-4 at its launch, and that nineteen of them run on a modern
+      smartphone. On the METR long-horizon benchmark, the human task length
+      AI completes at fifty percent success doubled eight times, from about
+      four minutes to about seventeen hours by April 2026, and Mollick
+      reports that METR says it can no longer measure the figure reliably;
+      other studies suggest seventeen weeks or more. Cost per correct answer
+      on a graduate-level question benchmark fell from about thirty cents to
+      about 0.04 cents. Import AI 477 independently cites Humanity's Last Exam
+      rising from 8% to 67.7% and FrontierMath from 2% to 94%, though Jack
+      Clark is an Anthropic co-founder, so his figures are first-party
+      adjacent. <em>The measurement apparatus, not only the capability, is
+      saturating</em>, which means enterprise planning built on benchmark-defined
+      agent horizons, including the June 30 agent-run-capacity signal in this
+      log, now lacks a reliable yardstick at the top end.
+    </p>
+    <p slot="watch">
+      Whether METR, Epoch AI, or an independent evaluator publishes a
+      successor measure that reliably captures multi-day task horizons within
+      six months. Whether an enterprise or consultancy publishes staffing or
+      process models built on multi-day agent horizons rather than
+      single-session task lengths.
+    </p>
+  </Signal>
+
+  <Signal {...signals[2]}>
+    <p slot="why">
+      Moonshot's multimodal mixture-of-experts model, with 2.8 trillion total
+      parameters, 104 billion active, and a one-million-token context window,
+      is priced at $2 per million input tokens and $10 per million output
+      tokens, down from K3's $3 and $15 and half the price of Claude Opus 5.5.
+      Artificial Analysis scored it 55, behind only Opus 5.5 at 58 and ahead of
+      the 53 posted by Claude Fable 5.1, GPT-6 Astra, and Gemini 4 Argon, and
+      estimates that if weights ship, the gap between leading open and
+      proprietary models shrinks from twelve index points to three. This
+      follows the July signal that put the open-frontier gap at three to five
+      months; the gap is now closer to one month. The caveats matter: only the
+      API is live, the license is unspecified, the benchmark table is
+      vendor-supplied, and independent results outside coding are mixed. The
+      enterprise implication is price-performance leverage in vendor
+      negotiation and a credible open-weight option for data-residency cases,
+      if the weights arrive.
+    </p>
+    <p slot="watch">
+      Whether Moonshot publishes full weights by November 4 under a license
+      that permits enterprise use, and whether Artificial Analysis then
+      confirms a gap of about three points. Whether the release proceeds
+      despite the China MOFCOM proposal that frontier models get government
+      pre-approval before international sharing, with open-source reportedly
+      approved automatically, and the US DHS order barring DeepSeek from
+      federal civilian procurement, both reported by Interconnects.
+    </p>
+  </Signal>
+
+  <Signal {...signals[3]}>
+    <p slot="why">
+      Infosys reported AI revenue up 29% quarter-on-quarter, now 10.5% of total
+      revenue, yet cut its FY27 constant-currency growth guidance to 1% to 2%
+      from 1.5% to 3%. Second-quarter revenue was $5.145 billion, up 1.5%
+      year on year, operating margin held at 21%, large-deal contract value
+      reached $5.2 billion with 62% net new, and free cash flow fell 15.7% to
+      $928 million. Analytics India Magazine attributes the cautious outlook to
+      weak client spending, slower decisions, and pressure on traditional IT
+      services pricing. <em>This is the competitor-side data point the October
+      1 Accenture signal asked for</em>: a second large services firm showing
+      AI-native revenue growing fast while the core base deflates, so AI
+      revenue is not yet offsetting the base. The same-day headline list also
+      shows Coforge revenue up 54%, a headline only and not reviewed in
+      detail, which suggests outcomes diverge by firm rather than following
+      one sector pattern.
+    </p>
+    <p slot="watch">
+      Whether a second Indian or global services firm (TCS, Wipro, Cognizant,
+      or Capgemini) cuts guidance in the same quarter while reporting AI
+      revenue growth, confirming a sector pattern rather than an
+      Infosys-specific one. Whether Infosys discloses how much of its AI
+      revenue is net new rather than converted from existing contracts.
+    </p>
+  </Signal>
+
+  <Signal {...signals[4]}>
+    <p slot="why">
+      The Pragmatic Engineer's analysis covers twenty-seven companies plus
+      aggregate CodeRabbit and Gitar data. Per-developer spend varies widely
+      and does not track company size: one 1,500-engineer public company caps
+      developers at $150 a month, a two-person agency spends about $3,000 per
+      developer, and a quant trading firm's total spend rose from $500K to $8M
+      a month since January. CodeRabbit reports weekly pull requests per
+      developer up 113% year on year, but company-level results are mixed,
+      from five to ten times more pull requests at the agency to roughly twice
+      as many at a 25,000-person firm to flat at others, and reported pull
+      request sizes grew up to three times. Subsidized subscriptions are
+      ending at some firms, which could raise bills five to ten times. The data
+      is anonymized, self-reported, and small-sample, and pull request counts
+      are a weak proxy for value. <em>Spend is scaling faster than the ability
+      to measure its return</em>, and the cost basis may be about to reprice.
+      This extends the October 3 budget-cap signal from risk control to ROI
+      accountability.
+    </p>
+    <p slot="watch">
+      Whether a larger or independent dataset (Stanford Digital Economy Lab,
+      DORA, or a consultancy study) reports a measured output-per-dollar
+      figure for AI coding spend using a value metric rather than pull request
+      counts within six months. Whether a major vendor ends subsidized
+      enterprise subscriptions and publishes the repricing effect on customer
+      usage.
+    </p>
+  </Signal>
+
+  <PreviousIssues currentDate={issueDate} />
+
+  <Methodology slot="footer" />
+</Issue>
