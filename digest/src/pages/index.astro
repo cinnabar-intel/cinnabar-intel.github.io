@@ -14,10 +14,10 @@ import type { SignalLogic } from "../components/SignalSpine.astro";
 import Methodology from "../components/Methodology.astro";
 import PreviousIssues from "../components/PreviousIssues.astro";
 
-const issueDate = "2026-10-19";
+const issueDate = "2026-10-26";
 const description =
-  "Between October 13 and 17, Anthropic reportedly told investors its quarterly revenue reached 16.8 billion dollars at an eleven percent operating margin, while its monorepo merge rate rose from about 2,500 to over 30,000 per day and forced it to replace Git with an in-house system called Scion. Modal crossed one billion dollars in annual run rate on the back of agent sandboxes, Meta released the strongest US open-weight model yet under a restrictive license, and Anthropic embedded METR staff with employee-like access as a template for third-party assurance. The week's thesis: agent-driven volume is breaking infrastructure built for human-paced work, and capital is already flowing to the replacement layers.";
-const title = "The Cinnabar Dispatch · 2026-10-19 · Possibilities with Probabilities";
+  "Between October 20 and 23, two security teams independently used frontier models to find the same remote code execution flaws in PHP and a leak collapsed the disclosure embargo; Ethan Mollick charted METR's task-horizon yardstick saturating while cost per correct answer fell roughly seven hundred fifty fold; Moonshot's Kimi K3.1 Pro reached fourth on the Artificial Analysis index at two dollars and ten dollars per million tokens; Infosys reported AI revenue up twenty-nine percent in a quarter while cutting its growth guidance; and the Pragmatic Engineer found that most of twenty-seven companies cannot yet measure the return on AI spend. The week's thesis: capability and cost curves are now moving faster than the institutions built to measure, disclose, and price them.";
+const title = "The Cinnabar Dispatch · 2026-10-26 · Possibilities with Probabilities";
 
 // Audio brief is graceful: renders if MP3 exists at the expected path, else nothing.
 // Path is checked at build time against the public/ directory.
@@ -50,117 +50,125 @@ interface SignalMeta {
 const signals: SignalMeta[] = [
   {
     index: 1,
-    date: "2026-10-15",
-    category: "02 Enterprise AI & Org Transformation · 05 AI Infrastructure Trajectory",
+    date: "2026-10-21",
+    category: "04 AI Governance & Ethics · 02 Enterprise AI & Org Transformation",
     title:
-      "Anthropic reportedly tells investors quarterly revenue reached 16.8 billion dollars at an eleven percent operating margin, making enterprise AI demand self-funding at the lab level.",
-    profile: "E3 T-Ac U2 H-Ah Z-Now",
+      "Two teams independently find the same web-scale PHP remote code execution flaws with frontier models, and a disclosure leak turns a two-month embargo into a mass-exploitation race.",
+    profile: "E4 T-Ac U3 H-Gr Z-Now",
     strength: "strong",
     logic: {
-      what: "Anthropic reportedly told investors Q3 revenue was $16.8B, with an 11% adjusted operating margin and $1.70 of revenue per $1 of compute.",
-      mechanism: "Demand large enough to fund the lab itself weakens the argument that AI spending has no return, at least on the supply side.",
-      soWhat: "Treat the figures as press-relayed and unaudited until a filing confirms them, but plan for suppliers with durable economics.",
+      what: "Two teams used frontier models to find the same PHP remote-execution flaws; a leak forced an early patch.",
+      mechanism: "Coordinated disclosure assumes few discoverers; parallel AI-assisted discovery collapses the embargo window and leaves slow-patching sites exposed.",
+      soWhat: "Patch-latency assumptions for long-tail web estates need revisiting, because exploitation now starts within hours of a leak.",
     },
     sources: [
       {
-        label: "simonwillison.net/2026/Oct/15/anthropic-tells-investors/",
-        url: "https://simonwillison.net/2026/Oct/15/anthropic-tells-investors/",
+        label: "simonwillison.net/2026/Oct/21/php-security-release",
+        url: "https://simonwillison.net/2026/Oct/21/php-security-release/",
       },
       {
-        label: "latent.space/p/ainews-modals-1b-arr-16b-series-d",
-        url: "https://www.latent.space/p/ainews-modals-1b-arr-16b-series-d",
+        label: "latent.space/p/ainews-openais-patch-the-planet-program",
+        url: "https://www.latent.space/p/ainews-openais-patch-the-planet-program",
+      },
+      {
+        label: "analyticsindiamag.com/ai-trends/internet-on-alert-as-ai-uncovers-critical-flaws-in-php-used-by-70-of-websites",
+        url: "https://analyticsindiamag.com/ai-trends/internet-on-alert-as-ai-uncovers-critical-flaws-in-php-used-by-70-of-websites",
+      },
+      {
+        label: "thezvi.substack.com/p/ai-191-the-hackening-begins",
+        url: "https://thezvi.substack.com/p/ai-191-the-hackening-begins",
       },
     ],
   },
   {
     index: 2,
-    date: "2026-10-13",
-    category: "11 Agent Frameworks & Dev Tools · 08 AI Productivity Tools",
+    date: "2026-10-20",
+    category: "01 GenAI Capabilities · 03 Workforce & Human-AI Collaboration",
     title:
-      "Anthropic replaces Git with an in-house system called Scion after merge volume rose from about 2,500 to over 30,000 per day.",
-    profile: "E3 T-Ac U3 H-Gr Z-Now",
+      "Mollick charts METR's task-horizon yardstick saturating while cost per correct answer falls roughly seven hundred fifty fold.",
+    profile: "E4 T-Ac U3 H-Gr Z-Now",
     strength: "strong",
     logic: {
-      what: "Anthropic's monorepo went from about 2,500 to over 30,000 merged changes per day, and seven engineers built Scion to replace Git.",
-      mechanism: "Developer infrastructure designed around human-paced commits is breaking at agent-driven volume, and the first fix is centralized design.",
-      soWhat: "Engineering leaders should test source control and CI capacity against agent-scale change rates before agents force the issue.",
+      what: "Mollick charts METR's task horizon doubling eight times, and METR reportedly can no longer measure it reliably.",
+      mechanism: "The yardstick is saturating, not only the capability, so benchmark-defined agent horizons lose reliability at the top end.",
+      soWhat: "Planning that relies on benchmark-defined agent capacity needs a different yardstick, since the current one no longer measures the top end.",
     },
     sources: [
       {
-        label: "anthropic.com/engineering/redesigning-source-control",
-        url: "https://www.anthropic.com/engineering/redesigning-source-control",
+        label: "oneusefulthing.org/p/30-months-on-the-exponential-in-charts",
+        url: "https://www.oneusefulthing.org/p/30-months-on-the-exponential-in-charts",
       },
       {
-        label: "simonwillison.net/2026/Oct/13/redesigning-source-control-at-anthropic/",
-        url: "https://simonwillison.net/2026/Oct/13/redesigning-source-control-at-anthropic/",
-      },
-      {
-        label: "newsletter.pragmaticengineer.com/p/the-pulse-openai-software-engineer",
-        url: "https://newsletter.pragmaticengineer.com/p/the-pulse-openai-software-engineer",
+        label: "importai.substack.com/p/import-ai-477-in-which-i-tell-the",
+        url: "https://importai.substack.com/p/import-ai-477-in-which-i-tell-the",
       },
     ],
   },
   {
     index: 3,
-    date: "2026-10-15",
-    category: "05 AI Infrastructure Trajectory · 11 Agent Frameworks & Dev Tools",
+    date: "2026-10-23",
+    category: "01 GenAI Capabilities · 10 Local AI Engineering",
     title:
-      "Modal crosses one billion dollars in annual run rate, with agent Sandboxes alone at about 300 million dollars.",
-    profile: "E3 T-Ac U2 H-Gr Z-Now",
+      "Kimi K3.1 Pro reaches fourth on the Artificial Analysis index at $2 and $10 per million tokens, with open weights promised by November 4.",
+    profile: "E3 T-Ac U2 H-Ah Z-Now",
     strength: "strong",
     logic: {
-      what: "Modal reported over $1B annualized run rate, with Sandboxes at about $300M and close to 3 billion sandboxes created.",
-      mechanism: "Isolated execution environments for agents are becoming a distinct infrastructure category with its own revenue base.",
-      soWhat: "Agent platform plans should budget for sandbox capacity as a separate line from model inference.",
+      what: "Moonshot's Kimi K3.1 Pro scored 55 on the Artificial Analysis index at $2 and $10 per million tokens.",
+      mechanism: "If the promised weights ship, the open-versus-proprietary gap shrinks from twelve index points to three, adding price-performance leverage.",
+      soWhat: "Enterprise buyers gain negotiating leverage and a credible open-weight option for data-residency cases, if the weights arrive.",
     },
     sources: [
       {
-        label: "latent.space/p/ainews-modals-1b-arr-16b-series-d",
-        url: "https://www.latent.space/p/ainews-modals-1b-arr-16b-series-d",
+        label: "simonwillison.net/2026/Oct/23/kimi-k31-pro",
+        url: "https://simonwillison.net/2026/Oct/23/kimi-k31-pro/",
+      },
+      {
+        label: "latent.space/p/ainews-kimi-31",
+        url: "https://www.latent.space/p/ainews-kimi-31",
+      },
+      {
+        label: "interconnects.ai/p/latest-open-artifacts-25-deepseek",
+        url: "https://www.interconnects.ai/p/latest-open-artifacts-25-deepseek",
       },
     ],
   },
   {
     index: 4,
-    date: "2026-10-15",
-    category: "01 GenAI Capabilities · 10 Local AI Engineering",
+    date: "2026-10-23",
+    category: "02 Enterprise AI & Org Transformation",
     title:
-      "Meta releases Muse Spark Open, the strongest US open-weight model so far, under a license that may limit enterprise adoption.",
-    profile: "E3 T-Sh U2 H-Gr Z-Now",
+      "Infosys AI revenue grows 29% quarter-on-quarter to 10.5% of revenue while its FY27 growth guidance is cut to 1% to 2%.",
+    profile: "E4 T-Sh U2 H-Gr Z-Now",
     strength: "strong",
     logic: {
-      what: "Meta released an 816B-parameter open-weight multimodal model that Lambert calls the strongest American-made open model by a wide margin.",
-      mechanism: "The gap between the best US and Chinese open models has roughly halved, but restrictive license terms put adoption at risk.",
-      soWhat: "Enterprises weighing open weights should read the license terms as closely as the benchmarks before building on them.",
+      what: "Infosys reported AI revenue up 29% quarter-on-quarter, now 10.5% of revenue, while cutting FY27 growth guidance to 1% to 2%.",
+      mechanism: "AI-native revenue is growing fast but is not yet offsetting deflation in the traditional services base.",
+      soWhat: "Services strategies should model AI revenue and core-base pricing pressure separately, since one does not yet cover the other.",
     },
     sources: [
       {
-        label: "huggingface.co/blog/meta-muse-spark-open",
-        url: "https://huggingface.co/blog/meta-muse-spark-open",
-      },
-      {
-        label: "interconnects.ai/p/meta-shakes-up-the-frontiers-open",
-        url: "https://www.interconnects.ai/p/meta-shakes-up-the-frontiers-open",
+        label: "analyticsindiamag.com/ai-news/infosys-ai-revenue-rises-29-in-q2-fy27-growth-guidance-cut",
+        url: "https://analyticsindiamag.com/ai-news/infosys-ai-revenue-rises-29-in-q2-fy27-growth-guidance-cut",
       },
     ],
   },
   {
     index: 5,
-    date: "2026-10-15",
-    category: "04 AI Governance & Ethics",
+    date: "2026-10-20",
+    category: "02 Enterprise AI & Org Transformation · 08 AI Productivity Tools",
     title:
-      "Anthropic embeds six METR staff with employee-like access and publication rights, setting a template for third-party assurance of frontier labs.",
-    profile: "E2 T-Em U3 H-Ah Z-Near",
+      "Across twenty-seven companies, AI spend per developer ranges from $150 to about $3,000 a month, and few can yet measure the return.",
+    profile: "E2 T-Em U2 H-Ah Z-Now",
     strength: "weak",
     logic: {
-      what: "Anthropic gave six METR employees internal access comparable to its risk teams, with publication rights subject to limited redaction.",
-      mechanism: "A three-tier access model makes embedded outside evaluation a concrete practice, though it rests on a vendor announcement so far.",
-      soWhat: "Governance teams can now ask suppliers for a defined level of evaluator access instead of a generic assurance statement.",
+      what: "Across twenty-seven companies, monthly AI spend per developer ranges from $150 to about $3,000, and few can measure return.",
+      mechanism: "Spend is scaling faster than the ability to measure value, and subsidized pricing may be about to reprice the cost basis.",
+      soWhat: "Define a value metric beyond pull-request counts before budgets reprice, or the ROI case will rest on weak proxies.",
     },
     sources: [
       {
-        label: "anthropic.com/news/an-update-on-independent-evaluators",
-        url: "https://www.anthropic.com/news/an-update-on-independent-evaluators",
+        label: "newsletter.pragmaticengineer.com/p/whats-the-roi-of-software-engineers",
+        url: "https://newsletter.pragmaticengineer.com/p/whats-the-roi-of-software-engineers",
       },
     ],
   },
@@ -178,29 +186,31 @@ const signals: SignalMeta[] = [
   />
 
   <HeroThesis kicker="This week's thesis">
-    The binding constraint on enterprise AI moved this week from the model to
-    everything built around it. Anthropic's merge rate grew twelvefold in four
-    months and broke Git, Modal's agent sandboxes became a business of about
-    three hundred million dollars, and Anthropic's reported sixteen billion
-    dollar quarter shows the demand pushing on all of it. Meta's open-weight
-    release and embedded outside evaluators show the surrounding layers of
-    supply and assurance forming at the same time. Enterprise AI strategy now
-    depends on whether your infrastructure can carry agent-scale load.
+    The curves are now steeper than the instruments built to read them.
+    METR's task-horizon benchmark is reportedly saturating, a two-month
+    coordinated disclosure collapsed within a day of a leak, and most
+    companies that have scaled AI spend cannot yet say what it returned.
+    Infosys shows the commercial version of the same gap: AI revenue
+    growing twenty-nine percent in a quarter while guidance for the core
+    business is cut. For an enterprise AI strategy reader, the binding
+    constraint is no longer what the models can do; it is whether your
+    organization can measure, disclose, and price it fast enough.
   </HeroThesis>
 
   <AudioBrief audioPath={audioPath} issueDate={issueDate} />
 
-  <ClusterCallout kicker="The pattern across signals 1, 2, and 3">
+  <ClusterCallout kicker="The pattern across signals 1, 2, 4, and 5">
     <p>
-      Read separately, signal 1 is a revenue disclosure, signal 2 is an
-      engineering migration, and signal 3 is a funding round. Read together,
-      they describe one chain: demand large enough to fund the lab, agent
-      traffic that outgrows human-paced tooling, and a new infrastructure
-      category built to absorb it. <strong>When a lab's own repository
-      changes twelvefold in four months and the sandbox layer under agents
-      reaches three hundred million dollars on its own, the bottleneck for
-      enterprise adoption is no longer model access but whether the
-      surrounding systems can carry agent-driven volume.</strong>
+      Read separately, signal 1 is a security incident, signal 2 is a set of
+      charts, signal 4 is a quarterly result, and signal 5 is a survey of
+      engineering budgets. Read together, they show the same failure in four
+      places: an institution designed for a slower curve, whether
+      embargo-based disclosure, a benchmark yardstick, a services revenue
+      model, or a spend-control process, is being outrun by capability and
+      cost declines it was not built to absorb. <strong>The organizations
+      that gain are not the ones with the most AI spend; they are the ones
+      that rebuild their measurement, disclosure, and pricing processes for a
+      curve that no longer waits for them.</strong>
     </p>
   </ClusterCallout>
 
@@ -208,137 +218,187 @@ const signals: SignalMeta[] = [
 
   <Synthesis>
     <p>
-      This week's scan logged eight signals, and five lead the issue.
-      Anthropic's reported quarterly revenue and margin (signal 1) show
-      demand that funds itself; the Scion migration (signal 2) shows what that
-      demand does to developer infrastructure; Modal's run rate (signal 3)
-      shows a new layer forming beneath agents; Meta's Muse Spark Open (signal
-      4) shows open-weight supply returning from the United States; and the
-      METR arrangement (signal 5) shows outside assurance becoming concrete.
+      This week's scan logged eight signals, four strong and four weak, and
+      five are featured here. Two teams used frontier models to find the same
+      PHP remote code execution flaws, and a leak turned a two-month embargo
+      into a mass-exploitation race (signal 1); Mollick charted METR's task
+      horizon doubling eight times until METR reportedly could no longer
+      measure it reliably (signal 2); Kimi K3.1 Pro reached fourth on the
+      Artificial Analysis index at a fraction of frontier pricing (signal 3);
+      Infosys reported AI revenue up twenty-nine percent in a quarter while
+      cutting guidance (signal 4); and the Pragmatic Engineer found that few
+      of twenty-seven companies can measure the return on AI spend (signal
+      5).
     </p>
 
     <p>
-      The through-line across signals 1, 2, and 3 is load. Signal 1 documents
-      the revenue behind rising usage, signal 2 documents a repository whose
-      change rate outran Git, and signal 3 documents a company monetizing the
-      isolated environments agents run in. <strong>Together they describe a
-      single shift: agent volume is now a capacity-planning problem for
-      source control, compute isolation, and delivery pipelines, not only a
-      model-selection problem.</strong>
+      Signals 1, 2, 4, and 5 converge on a single structural point. The
+      capability and cost curves keep steepening, and the processes that sit
+      on top of them, including vulnerability disclosure, benchmarking,
+      services pricing, and budget control, were each designed on the
+      assumption of a slower curve. <strong>When the measuring instrument
+      saturates, the disclosure window collapses, and spend outruns ROI
+      evidence, the risk is not that AI underdelivers; it is that
+      organizations cannot tell whether it delivered.</strong> Signal 3 adds
+      the price side: a near-frontier model at half the price of the leader
+      gives buyers leverage, but only if weights and licenses arrive as
+      promised.
     </p>
 
     <p>
-      For the reader whose work is enterprise AI strategy: this week suggests
-      three updates. First, test source control, CI, and sandbox capacity
-      against agent-scale change rates, since even a frontier lab had to
-      replace its tooling. Second, read open-weight license terms as closely
-      as benchmarks, since Lambert flags Meta's terms as a risk to adoption.
-      Third, treat the revenue figures in signal 1 as press-relayed and
-      unaudited until a filing confirms them, and ask suppliers for a defined
-      level of evaluator access in the way signal 5 now makes possible.
+      For the reader whose work is enterprise AI strategy: this week
+      suggests three updates to current planning. First, treat patch latency
+      as a strategic metric, because the PHP episode shows exploitation
+      beginning within hours of a leak and long-tail estates carrying the
+      exposure. Second, do not anchor capacity plans on a single published
+      benchmark horizon while the yardstick itself is saturating; ask which
+      measure will replace it. Third, set a value metric beyond pull-request
+      counts for AI spend now, since subsidized pricing may end at some firms
+      and Infosys shows that fast AI revenue growth does not automatically
+      offset pressure on the core business.
     </p>
   </Synthesis>
 
   <Signal {...signals[0]}>
     <p slot="why">
-      Anthropic reportedly told investors that quarterly revenue rose from
-      about $4.8B in Q1 to $11.5B in Q2 and $16.8B in Q3, with an eleven
-      percent adjusted operating margin excluding stock-based compensation and
-      $1.70 of revenue for every $1 spent on compute. Enterprise AI demand is
-      now large enough to be self-funding at the lab level, which weakens the
-      argument that AI spend has no return, at least on the supply side. The
-      figures come from investor communications relayed by the press ahead of
-      an IPO, so they are <em>not audited</em>. Willison also notes that
-      Anthropic cited distillation at five to seven percent of revenue and
-      said it cut it back materially in Q3, and that annualized run-rate
-      framing appears to have been dropped.
+      Security firm Calif, using OpenAI's GPT-5.6 Sol, and Wiz, using Gemini 4
+      Argon, GPT-5.6 Sol, and its own tooling, independently found the same
+      two PHP memory-corruption flaws (CVE-2026-109618 and CVE-2026-109619,
+      CVSS 9.2) in August, with unauthenticated remote code execution
+      demonstrated against WordPress, Drupal, and Joomla. PHP powers roughly
+      seventy percent of websites. After the CVE identifiers leaked on October
+      20, PHP moved its release up by a day and a misplaced proof-of-concept
+      video spread; Cloudflare reported thousands of exploit attempts in the
+      ten hours before disclosure, tens of thousands within forty-five minutes
+      after, and millions later. Coordinated disclosure assumes few
+      discoverers and a long embargo. <em>When several parties can find the
+      same bug in parallel with commercial models, the embargo window
+      collapses</em> and slow-patching long-tail sites carry the exposure.
+      This extends the August signal on AI-driven disruption of coordinated
+      disclosure from a rumor-level dynamic to an in-the-wild, web-scale
+      event. The widely quoted claims that seventy percent of the web is
+      affected and that about 1.5 million servers are unpatched are not
+      independently verified and are not relied on here.
     </p>
     <p slot="watch">
-      Whether the S-1 or an audited quarterly filing confirms revenue and
-      margin figures within the reported range. Whether OpenAI or Google
-      disclose comparable compute-adjusted unit economics within six months.
+      Whether PHP, CISA, or a major CVE Numbering Authority publishes a
+      revised embargo and disclosure policy that explicitly assumes parallel
+      AI-assisted discovery within six months. Whether an enterprise or
+      insurer publishes a post-incident measure of patch lag for PHP2Shell,
+      quantifying the exposure window for long-tail web estates.
     </p>
   </Signal>
 
   <Signal {...signals[1]}>
     <p slot="why">
-      Anthropic's monorepo averaged about 2,500 merged changes per day in May
-      2026 and over 30,000 by September, peaking at 30,401 on September 9. Git
-      could not serve roughly twenty-five million daily CI checkouts of a
-      repository whose main branch history is nearly 100 GB, so seven
-      engineers built a centralized system, Scion, in a five-month migration.
-      Scion has no offline support because Claude is its heaviest user and is
-      always online. Developer infrastructure designed around human-paced
-      commits is <em>breaking at agent-driven volume</em>, and the first fix
-      is a return to centralized design.
+      In "30 Months on the Exponential (in Charts)," Mollick shows that twenty
+      different models, all from Anthropic, Google, or OpenAI, have held the
+      lead since GPT-4's release, that one hundred eighty models now beat
+      GPT-4 at its launch, and that nineteen of them run on a modern
+      smartphone. On the METR long-horizon benchmark, the human task length
+      AI completes at fifty percent success doubled eight times, from about
+      four minutes to about seventeen hours by April 2026, and Mollick
+      reports that METR says it can no longer measure the figure reliably;
+      other studies suggest seventeen weeks or more. Cost per correct answer
+      on a graduate-level question benchmark fell from about thirty cents to
+      about 0.04 cents. Import AI 477 independently cites Humanity's Last Exam
+      rising from 8% to 67.7% and FrontierMath from 2% to 94%, though Jack
+      Clark is an Anthropic co-founder, so his figures are first-party
+      adjacent. <em>The measurement apparatus, not only the capability, is
+      saturating</em>, which means enterprise planning built on benchmark-defined
+      agent horizons, including the June 30 agent-run-capacity signal in this
+      log, now lacks a reliable yardstick at the top end.
     </p>
     <p slot="watch">
-      Whether a second organization outside the frontier labs publicly reports
-      replacing or heavily re-architecting Git or its CI pipeline for
-      agent-driven change volume within twelve months. Whether Anthropic
-      open-sources Scion or its derived-data layer.
+      Whether METR, Epoch AI, or an independent evaluator publishes a
+      successor measure that reliably captures multi-day task horizons within
+      six months. Whether an enterprise or consultancy publishes staffing or
+      process models built on multi-day agent horizons rather than
+      single-session task lengths.
     </p>
   </Signal>
 
   <Signal {...signals[2]}>
     <p slot="why">
-      Modal reported more than $1B annualized run rate, revenue growth above
-      fifteen times year over year, and a Series D led by Accel. Sandboxes,
-      launched in 2023, now run at about $300M on their own, with close to
-      three billion sandboxes created and scaling to a million concurrent,
-      serving background agents, reinforcement learning, and vibe-coding
-      platforms. The same newsletter reports Together at $1.2B in annual
-      bookings, Fireworks past $1B ARR, and Baseten at $600M annualized
-      revenue. Isolated execution environments for agents are becoming a
-      <em>distinct infrastructure category</em> with its own revenue base.
+      Moonshot's multimodal mixture-of-experts model, with 2.8 trillion total
+      parameters, 104 billion active, and a one-million-token context window,
+      is priced at $2 per million input tokens and $10 per million output
+      tokens, down from K3's $3 and $15 and half the price of Claude Opus 5.5.
+      Artificial Analysis scored it 55, behind only Opus 5.5 at 58 and ahead of
+      the 53 posted by Claude Fable 5.1, GPT-6 Astra, and Gemini 4 Argon, and
+      estimates that if weights ship, the gap between leading open and
+      proprietary models shrinks from twelve index points to three. This
+      follows the July signal that put the open-frontier gap at three to five
+      months; the gap is now closer to one month. The caveats matter: only the
+      API is live, the license is unspecified, the benchmark table is
+      vendor-supplied, and independent results outside coding are mixed. The
+      enterprise implication is price-performance leverage in vendor
+      negotiation and a credible open-weight option for data-residency cases,
+      if the weights arrive.
     </p>
     <p slot="watch">
-      Whether a hyperscaler launches a directly competing agent-sandbox
-      product with published concurrency and pricing within six months.
-      Whether sandbox share of Modal's revenue is disclosed above thirty
-      percent in a later round or filing.
+      Whether Moonshot publishes full weights by November 4 under a license
+      that permits enterprise use, and whether Artificial Analysis then
+      confirms a gap of about three points. Whether the release proceeds
+      despite the China MOFCOM proposal that frontier models get government
+      pre-approval before international sharing, with open-source reportedly
+      approved automatically, and the US DHS order barring DeepSeek from
+      federal civilian procurement, both reported by Interconnects.
     </p>
   </Signal>
 
   <Signal {...signals[3]}>
     <p slot="why">
-      Muse Spark Open is a multimodal mixture-of-experts model with about
-      816B total and 42B active parameters and a one-million-token context,
-      shipped with GGUF, MLX, vLLM, and SGLang support. Lambert calls it the
-      strongest American-made open model by a wide margin, placing it above
-      GLM 5.2 but below GLM 5.3 and Kimi K3, and says the gap between the best
-      US and Chinese open models has roughly halved. He flags license terms,
-      including a "Built with Muse" requirement and a separate license above
-      $20M monthly company revenue, as a <em>strategic risk to adoption</em>.
-      Read with Reflection's Beam and Mistral Large 4 from Import AI 476, US
-      and European open-weight supply is returning, but the license terms
-      decide whether enterprises can build on it.
+      Infosys reported AI revenue up 29% quarter-on-quarter, now 10.5% of total
+      revenue, yet cut its FY27 constant-currency growth guidance to 1% to 2%
+      from 1.5% to 3%. Second-quarter revenue was $5.145 billion, up 1.5%
+      year on year, operating margin held at 21%, large-deal contract value
+      reached $5.2 billion with 62% net new, and free cash flow fell 15.7% to
+      $928 million. Analytics India Magazine attributes the cautious outlook to
+      weak client spending, slower decisions, and pressure on traditional IT
+      services pricing. <em>This is the competitor-side data point the October
+      1 Accenture signal asked for</em>: a second large services firm showing
+      AI-native revenue growing fast while the core base deflates, so AI
+      revenue is not yet offsetting the base. The same-day headline list also
+      shows Coforge revenue up 54%, a headline only and not reviewed in
+      detail, which suggests outcomes diverge by firm rather than following
+      one sector pattern.
     </p>
     <p slot="watch">
-      Whether independent adoption data, such as Hugging Face downloads and
-      enterprise deployments, shows Muse Spark Open outpacing comparable
-      Chinese open models within six months. Whether Meta revises the license
-      toward a standard permissive form.
+      Whether a second Indian or global services firm (TCS, Wipro, Cognizant,
+      or Capgemini) cuts guidance in the same quarter while reporting AI
+      revenue growth, confirming a sector pattern rather than an
+      Infosys-specific one. Whether Infosys discloses how much of its AI
+      revenue is net new rather than converted from existing contracts.
     </p>
   </Signal>
 
   <Signal {...signals[4]}>
     <p slot="why">
-      Six METR employees receive company hardware, office space, and internal
-      tool access comparable to Anthropic's risk assessment teams, and METR
-      may publish its analysis without Anthropic's veto, subject to redaction
-      of categories such as customer data and model architecture. Anthropic
-      defines three access tiers and says every frontier lab should embed
-      evaluators. It also names an Accenture and Faculty partnership on model
-      evaluation and red-teaming, and early talks with Hugging Face. This is a
-      vendor announcement with no independent verification yet, so evidence is
-      capped at two, but it sets a <em>concrete template</em> for third-party
-      assurance that enterprise governance teams can request from suppliers.
+      The Pragmatic Engineer's analysis covers twenty-seven companies plus
+      aggregate CodeRabbit and Gitar data. Per-developer spend varies widely
+      and does not track company size: one 1,500-engineer public company caps
+      developers at $150 a month, a two-person agency spends about $3,000 per
+      developer, and a quant trading firm's total spend rose from $500K to $8M
+      a month since January. CodeRabbit reports weekly pull requests per
+      developer up 113% year on year, but company-level results are mixed,
+      from five to ten times more pull requests at the agency to roughly twice
+      as many at a 25,000-person firm to flat at others, and reported pull
+      request sizes grew up to three times. Subsidized subscriptions are
+      ending at some firms, which could raise bills five to ten times. The data
+      is anonymized, self-reported, and small-sample, and pull request counts
+      are a weak proxy for value. <em>Spend is scaling faster than the ability
+      to measure its return</em>, and the cost basis may be about to reprice.
+      This extends the October 3 budget-cap signal from risk control to ROI
+      accountability.
     </p>
     <p slot="watch">
-      Whether METR publishes its first analysis of Anthropic with disclosed
-      redactions within six months. Whether OpenAI or Google DeepMind announce
-      comparable embedded-evaluator arrangements.
+      Whether a larger or independent dataset (Stanford Digital Economy Lab,
+      DORA, or a consultancy study) reports a measured output-per-dollar
+      figure for AI coding spend using a value metric rather than pull request
+      counts within six months. Whether a major vendor ends subsidized
+      enterprise subscriptions and publishes the repricing effect on customer
+      usage.
     </p>
   </Signal>
 
