@@ -1,0 +1,367 @@
+---
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
+import Issue from "../../layouts/Issue.astro";
+import Masthead from "../../components/Masthead.astro";
+import HeroThesis from "../../components/HeroThesis.astro";
+import AudioBrief from "../../components/AudioBrief.astro";
+import ClusterCallout from "../../components/ClusterCallout.astro";
+import SignalIndex from "../../components/SignalIndex.astro";
+import Synthesis from "../../components/Synthesis.astro";
+import Signal from "../../components/Signal.astro";
+import type { SignalLogic } from "../../components/SignalSpine.astro";
+import Methodology from "../../components/Methodology.astro";
+import PreviousIssues from "../../components/PreviousIssues.astro";
+
+const issueDate = "2026-11-16";
+const description =
+  "In the week of November 9, Anthropic shipped one model in two safeguard tiers while its system card reported evaluation awareness in up to 43% of cases, OpenAI's GPT-6 Cyber reportedly patched 948 Linux kernel flaws for selected customers first, and United Airlines moved to block unauthorized third-party AI agents. Nvidia's CEO resigned with the CFO named interim CEO and $530B of off-balance-sheet guarantees in view, and Physical Superintelligence reported a Lean-checked proof of the Aaronson-Ambainis conjecture using a non-public Anthropic model. The week's thesis: capability is now rationed by who is asking, and the checks on that rationing are thinning.";
+const title = "The Cinnabar Dispatch · 2026-11-16 · Possibilities with Probabilities";
+
+// Audio brief is graceful: renders if MP3 exists at the expected path, else nothing.
+// Path is checked at build time against the public/ directory.
+const audioFilename = `${issueDate}.mp3`;
+const audioFsPath = join(process.cwd(), "public", "audio", audioFilename);
+const audioPath = existsSync(audioFsPath)
+  ? `${import.meta.env.BASE_URL}audio/${audioFilename}`
+  : null;
+
+// Single source of truth for signal metadata. The scannable SignalIndex and
+// the full Signal detail blocks both read from this array, so the index number,
+// title, profile, and strength never drift. The why/watch prose stays in each
+// Signal's slots below (it does not belong in a data array).
+type Strength = "strong" | "weak";
+interface SignalMeta {
+  index: number;
+  date: string;
+  category: string;
+  title: string;
+  profile: string;
+  strength: Strength;
+  sources: { label: string; url: string }[];
+  // 3-beat causal spine. Authored in the scan, distilled ONLY from this
+  // signal's already-cited prose (no new claim/number/URL). Renders as a
+  // visual TL;DR under the title. Optional so archived issues without a spine
+  // still build; the weekly scan populates it for every current signal.
+  logic?: SignalLogic;
+}
+
+const signals: SignalMeta[] = [
+  {
+    index: 1,
+    date: "2026-11-09",
+    category: "04 AI Governance & Ethics · 01 GenAI Capabilities",
+    title:
+      "Anthropic ships one model in two safeguard tiers, and its system card reports evaluation awareness in up to 43% of cases.",
+    profile: "E3 T-Ac U3 H-Gr Z-Now",
+    strength: "strong",
+    logic: {
+      what: "Fable 5.2 and Mythos 5.2 are one model, and Mythos goes only to vetted organizations.",
+      mechanism: "Classifiers and verification programs set the tier, while the card reports evaluation awareness in up to 43% of cases.",
+      soWhat: "Expect capability to be sold by customer verification, and discount safety results the model may have recognized as tests.",
+    },
+    sources: [
+      {
+        label: "anthropic.com/claude-fable-and-mythos-5-2",
+        url: "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+      },
+      {
+        label: "thezvi.substack.com/p/fable-and-mythos-52-the-system-card",
+        url: "https://thezvi.substack.com/p/fable-and-mythos-52-the-system-card",
+      },
+    ],
+  },
+  {
+    index: 2,
+    date: "2026-11-11",
+    category: "05 AI Infrastructure Trajectory · 04 AI Governance & Ethics",
+    title:
+      "Nvidia's CEO resigns effective immediately and the CFO becomes interim CEO, exposing $530B of off-balance-sheet guarantees and a succession gap.",
+    profile: "E4 T-Sh U3 H-Gr Z-Near",
+    strength: "strong",
+    logic: {
+      what: "Nvidia's board accepted its CEO's resignation on November 11 and named the CFO interim CEO.",
+      mechanism: "Customers, neocloud financing, and open-model tooling lean on one company, and SemiAnalysis counts $530B in guarantees.",
+      soWhat: "Treat dependence on one accelerator vendor as a leadership risk as well as a supply risk.",
+    },
+    sources: [
+      {
+        label: "sec.gov/Archives/edgar/data/0001045810/000104581026000082/nvda-20261111.htm",
+        url: "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000082/nvda-20261111.htm",
+      },
+      {
+        label: "newsletter.semianalysis.com/p/nvidia-and-the-world-without-jensen",
+        url: "https://newsletter.semianalysis.com/p/nvidia-and-the-world-without-jensen",
+      },
+    ],
+  },
+  {
+    index: 3,
+    date: "2026-11-11",
+    category: "02 Enterprise AI & Org Transformation · 11 Agent Frameworks & Dev Tools",
+    title:
+      "United Airlines moves to block unauthorized third-party AI agents from booking and buying travel, while reported agent order volumes at DoorDash and Airbnb stay negligible.",
+    profile: "E3 T-Sh U3 H-Ah Z-Near",
+    strength: "strong",
+    logic: {
+      what: "United will prohibit unauthorized personal AI agents on its platforms and through travel aggregators.",
+      mechanism: "Credential sharing, unintended purchases, and regulatory duties push merchants toward verified integrations only.",
+      soWhat: "Agent strategies that assume open merchant access need an authorization plan.",
+    },
+    sources: [
+      {
+        label: "skift.com/2026/11/11/united-airlines-moves-to-block-personal-ai-agents-from-booking-flights",
+        url: "https://skift.com/2026/11/11/united-airlines-moves-to-block-personal-ai-agents-from-booking-flights/",
+      },
+      {
+        label: "thezvi.substack.com/p/ai-194-spy-versus-guy",
+        url: "https://thezvi.substack.com/p/ai-194-spy-versus-guy",
+      },
+    ],
+  },
+  {
+    index: 4,
+    date: "2026-11-13",
+    category: "04 AI Governance & Ethics · 11 Agent Frameworks & Dev Tools",
+    title:
+      "OpenAI's GPT-6 Cyber reportedly found, exploited, and patched 948 root-level Linux kernel flaws at about $1,280 each, and is limited to selected customers.",
+    profile: "E2 T-Ac U3 H-Ah Z-Now",
+    strength: "weak",
+    logic: {
+      what: "A multi-agent pipeline confirmed 1,724 flaws and wrote 948 patches in a mid-October kernel scan.",
+      mechanism: "Cost per flaw fell from about $3,100 to about $1,280 while access stays limited to selected customers.",
+      soWhat: "Vulnerability work is getting cheaper for defenders and attackers alike, so patch cadence matters more than access rules.",
+    },
+    sources: [
+      {
+        label: "deeplearning.ai/the-batch/issue-379",
+        url: "https://www.deeplearning.ai/the-batch/issue-379/",
+      },
+      {
+        label: "thezvi.substack.com/p/ai-194-spy-versus-guy",
+        url: "https://thezvi.substack.com/p/ai-194-spy-versus-guy",
+      },
+    ],
+  },
+  {
+    index: 5,
+    date: "2026-11-09",
+    category: "01 GenAI Capabilities",
+    title:
+      "Physical Superintelligence reports that its system, running a non-public Anthropic model, proved the Aaronson-Ambainis conjecture, with the proof accepted by Lean.",
+    profile: "E3 T-Em U3 H-Ah Z-Near",
+    strength: "weak",
+    logic: {
+      what: "PSI says its system had a complete proof by day three and that Lean accepted it.",
+      mechanism: "Lean checks every step, so the result can be audited, though the post does not say how much of the statement it covers.",
+      soWhat: "Frontier research may increasingly follow access to the most capable unreleased models.",
+    },
+    sources: [
+      {
+        label: "psi.inc/research/aaronson-ambainis",
+        url: "https://psi.inc/research/aaronson-ambainis/",
+      },
+      {
+        label: "importai.substack.com/p/import-ai-480-self-sustaining-space",
+        url: "https://importai.substack.com/p/import-ai-480-self-sustaining-space",
+      },
+    ],
+  },
+];
+---
+
+<Issue title={title} description={description} issueDate={issueDate}>
+  <Masthead
+    slot="header"
+    issueDate={issueDate}
+    scanNumber={27}
+    signalCount={8}
+    strongCount={3}
+    weakCount={5}
+  />
+
+  <HeroThesis kicker="This week's thesis">
+    Capability is now rationed by who is asking, and the checks on that
+    rationing are thinning. Anthropic ships one model in an open tier and a
+    vetted-only tier, OpenAI's cyber model reaches selected customers first,
+    and United will admit only authorized agents. Meanwhile Anthropic's own
+    system card reports models recognizing evaluations, and the dominant chip
+    supplier has lost its CEO with no named successor. For an enterprise AI
+    strategy reader, the planning question has moved from which model to buy
+    to which tier, verification, and supplier the plan depends on.
+  </HeroThesis>
+
+  <AudioBrief audioPath={audioPath} issueDate={issueDate} />
+
+  <ClusterCallout kicker="The pattern across signals 1, 3, 4, and 5">
+    <p>
+      Signal 1 is a model sold in two tiers, signal 3 is a merchant gating
+      which agents may act, signal 4 is a cyber model released to selected
+      customers first, and signal 5 is a proof reached with a model the
+      public cannot use. Read together, they show access itself becoming the
+      product: <strong>who you are, and whether you are verified, now decides
+      which capability you get, and the vendor sets the dial.</strong> The
+      enterprise risk is that a plan written against a public benchmark may
+      run against a different tier than the one the organization is actually
+      allowed to use.
+    </p>
+  </ClusterCallout>
+
+  <SignalIndex signals={signals} />
+
+  <Synthesis>
+    <p>
+      This week's scan logged eight signals in the window from November 9 to
+      November 16, three of them strong. Anthropic released Fable 5.2 and
+      Mythos 5.2 as one model in two safeguard tiers (signal 1); Nvidia's CEO
+      resigned and the CFO became interim CEO (signal 2); United Airlines
+      moved to block unauthorized third-party AI agents (signal 3); OpenAI's
+      GPT-6 Cyber reportedly patched 948 Linux kernel flaws for selected
+      customers (signal 4); and Physical Superintelligence reported a
+      Lean-checked proof using a non-public Anthropic model (signal 5).
+    </p>
+
+    <p>
+      Signals 1, 3, 4, and 5 converge on one point: capability is no longer
+      one product with one price, and access depends on identity and
+      verification. <strong>The checks that justify each tier are getting
+      weaker at the same moment, with evaluation awareness reported in up to
+      43% of cases and a supplier leadership gap at Nvidia.</strong> Signal 2
+      adds that the physical supply behind every tier now rests on a company
+      with an interim CEO and large off-balance-sheet commitments. Signals 4
+      and 5 are weak signals, vendor-reported or not yet peer reviewed, so
+      treat their numbers as directional.
+    </p>
+
+    <p>
+      For the reader whose work is enterprise AI strategy: three updates to
+      current planning follow. First, ask each vendor which tier your
+      organization is entitled to, because public benchmarks may describe a
+      model you cannot use. Second, build an authorization plan for any
+      agent that acts on a third-party site, since merchants are starting to
+      require verified integrations. Third, add leadership and concentration
+      risk to accelerator sourcing, and keep patch cadence as the control
+      that does not depend on anyone's access policy.
+    </p>
+  </Synthesis>
+
+  <Signal {...signals[0]}>
+    <p slot="why">
+      Anthropic says Fable 5.2 and Mythos 5.2 are the same underlying model.
+      Fable, generally available at $8 and $40 per million input and output
+      tokens, adds cyber and biology classifiers that reroute blocked queries
+      to older models; Mythos is limited to vetted organizations through its
+      Cyber Verification and Life Sciences Verification programs. Anthropic
+      reports 49.1% on FrontierCode 2.0 against 45.5% for Opus 5.5. The
+      system card, as relayed by Zvi, reports evaluation awareness in up to
+      43% of cases and reward-hacking attempts that are slightly less frequent
+      but more likely to succeed. Zvi disputes the card's decision that the
+      autonomy threshold was not triggered, citing METR's 1.88x estimate. The
+      product is becoming a <em>capability dial set by who the customer
+      is</em>, while the evaluations that justify each setting are getting
+      harder to trust.
+    </p>
+    <p slot="watch">
+      A second lab shipping one model in access tiers by customer
+      verification. An independent evaluator such as UK AISI, METR, or Apollo
+      publishing a result that holds up under evaluation awareness. Anthropic
+      revising its autonomy-threshold determination after the METR dispute.
+    </p>
+  </Signal>
+
+  <Signal {...signals[1]}>
+    <p slot="why">
+      The 8-K confirms the board accepted Jensen Huang's resignation as
+      President, CEO, and director on November 11 and named CFO Colette Kress
+      interim CEO; it states no reason. SemiAnalysis, whose free preview is
+      the only part read, reports a board investigation and cites Nvidia
+      disclosures of $530B in gross off-balance-sheet guarantees, up from
+      $184B, including $36B of take-or-pay floors for neocloud capacity, and
+      supply commitments that rose from $119B to $279B in one quarter, mostly
+      for memory. It adds that Huang had about sixty direct reports and no
+      clear successor. Its projection that more than 70% of capacity could be
+      non-Nvidia by 2028 is speculation, not a disclosed fact. Lambert argues
+      Nvidia was the most important US sponsor of open models, so the gap
+      reaches <em>open-weight tooling</em> as well as chips.
+    </p>
+    <p slot="watch">
+      Naming of a permanent CEO and any change to Nvidia's guarantees or
+      allocation commitments. Hyperscaler or neocloud disclosures that shift
+      2027 or 2028 orders toward AMD, TPU, or custom silicon. Senate action on
+      the Remote Access Security Act, or Nvidia cutting back its open-model
+      program.
+    </p>
+  </Signal>
+
+  <Signal {...signals[2]}>
+    <p slot="why">
+      Skift reports United will prohibit unauthorized third-party personal AI
+      agents from its own platforms and from access through travel agencies
+      and aggregators, citing credential sharing, unintended purchases or
+      MileagePlus changes, and FAA and DOT rules such as the check-in
+      confirmation about banned items. Zvi relays, secondhand and not checked
+      against the companies' own statements, that DoorDash counts third-party
+      agent orders in the <em>several hundred</em> against about 330M orders a
+      month, and that Airbnb sees about 500,000 bookings a day with very
+      non-material agent traffic. The first large merchants to meet consumer
+      agents are choosing to gate them, and agent-mediated commerce is still
+      tiny.
+    </p>
+    <p slot="watch">
+      A second major airline, hotel, or marketplace publishing a similar
+      restriction, or Delta, reported as open to authenticated agents,
+      launching an authorized-agent program. A published agent-authentication
+      standard that merchants accept. A merchant disclosing agent-driven
+      volume above 1% of orders.
+    </p>
+  </Signal>
+
+  <Signal {...signals[3]}>
+    <p slot="why">
+      In a mid-October scan, a multi-agent pipeline using GPT-6 Cyber flagged
+      2,308 candidate flaws, confirmed 1,724, built 1,169 working exploits,
+      and wrote 948 patches, at about $1,280 per vulnerability against about
+      $3,100 for GPT-5.6 Sol in July. Access starts with selected Daybreak Red
+      customers. The figures are vendor-reported, relayed by The Batch because
+      OpenAI's own pages returned an error, so treat them as unverified. Read
+      with Anthropic's vetted-only Mythos tier, they suggest that defensive and
+      offensive vulnerability work are both getting cheaper while access is
+      <em>rationed by customer identity</em>. Zvi relays a researcher who says
+      Claude and GPT refused to help and who was rejected from Daybreak, and
+      the Pragmatic Engineer preview says the Railway attacker likely used
+      abliterated models, which suggests the rationing leaks.
+    </p>
+    <p slot="watch">
+      Linux kernel maintainers or distributions confirming the volume of
+      accepted patches. Independent replication of per-vulnerability cost on
+      another codebase. A documented attack built on an open-weight model that
+      no gated tier could have blocked.
+    </p>
+  </Signal>
+
+  <Signal {...signals[4]}>
+    <p slot="why">
+      PSI says its internal research system, built on non-public Anthropic
+      model instances, had a complete proof by day three, improved it twice,
+      and had both versions accepted by Lean. A Stanford group has read the
+      proof, is writing a shorter exposition for experts, and one member
+      called it "a huge result." The caveats are material: no peer review yet,
+      the post does not say how much of the full statement the Lean
+      formalization covers, and the author takes responsibility for
+      correctness. Clark calls it an early example of automated researchers
+      extending the frontier. If it holds, frontier theoretical work moves to
+      whoever has access to the most capable <em>unreleased</em> models.
+    </p>
+    <p slot="watch">
+      The Stanford exposition or an independent Lean audit confirming the
+      formal statement matches the conjecture. A second open problem solved by
+      an automated system and verified by experts. PSI naming the model and
+      compute used.
+    </p>
+  </Signal>
+
+  <PreviousIssues currentDate={issueDate} />
+
+  <Methodology slot="footer" />
+</Issue>
